@@ -1,0 +1,2 @@
+extends BattleEnemy
+class_name BattleMinion

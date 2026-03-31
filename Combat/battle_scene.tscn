@@ -1,0 +1,55 @@
+[gd_scene format=3 uid="uid://cc1ohb76gpjns"]
+
+[ext_resource type="Texture2D" uid="uid://q1dd1vb8jr1f" path="res://icon.svg" id="1_q5oti"]
+[ext_resource type="Script" uid="uid://7rgs06v8khnv" path="res://Combat/battle_scene.gd" id="1_r0pvh"]
+[ext_resource type="PackedScene" uid="uid://dgjar6b8g0n50" path="res://Combat/combat_menu.tscn" id="2_iw0lx"]
+[ext_resource type="Script" uid="uid://cwsvb470r8u3q" path="res://Combat/player.gd" id="3_hrir6"]
+[ext_resource type="Script" uid="uid://bae01om4annqy" path="res://Combat/battle_minion.gd" id="4_hrir6"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_q5oti"]
+sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
+ground_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
+
+[sub_resource type="Sky" id="Sky_iw0lx"]
+sky_material = SubResource("ProceduralSkyMaterial_q5oti")
+
+[sub_resource type="Environment" id="Environment_omqys"]
+background_mode = 2
+sky = SubResource("Sky_iw0lx")
+tonemap_mode = 2
+glow_enabled = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_iw0lx"]
+albedo_color = Color(0.106479414, 0.20812607, 0.11392409, 1)
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_omqys"]
+material = SubResource("StandardMaterial3D_iw0lx")
+size = Vector2(40, 40)
+
+[node name="BattleScene" type="Node3D" unique_id=511297719]
+script = ExtResource("1_r0pvh")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=1464599185]
+transform = Transform3D(-0.8660254, -0.43301278, 0.25, 0, 0.49999997, 0.86602545, -0.50000006, 0.75, -0.43301266, 0, 0, 0)
+shadow_enabled = true
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1281465447]
+environment = SubResource("Environment_omqys")
+
+[node name="Camera3D" type="Camera3D" parent="." unique_id=1749398744]
+transform = Transform3D(1, 0, 0, 0, 0.99258864, 0.12152287, 0, -0.12152287, 0.99258864, 0, 0.8694999, 4.642008)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=94951689]
+mesh = SubResource("PlaneMesh_omqys")
+
+[node name="Player" type="Sprite3D" parent="." unique_id=1859564157]
+transform = Transform3D(0.49621236, 0, 0.41206586, 0, 0.645, 0, -0.41206586, 0, 0.49621236, -2.0243435, 0.4978546, 1.8053284)
+texture = ExtResource("1_q5oti")
+script = ExtResource("3_hrir6")
+
+[node name="EnemyMinion" type="Sprite3D" parent="." unique_id=559428316]
+transform = Transform3D(0.3331521, 0, -0.46865195, 0, 0.575, 0, 0.46865195, 0, 0.3331521, 2.6465883, 0.36900675, 1.5834628)
+texture = ExtResource("1_q5oti")
+script = ExtResource("4_hrir6")
+
+[node name="CombatMenu" parent="." unique_id=953059002 instance=ExtResource("2_iw0lx")]

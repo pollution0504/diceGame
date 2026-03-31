@@ -1,0 +1,29 @@
+[gd_scene format=3 uid="uid://dgjar6b8g0n50"]
+
+[node name="CombatMenu" type="Control" unique_id=953059002]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=1570819330]
+layout_mode = 0
+offset_left = 375.0
+offset_top = 271.0
+offset_right = 445.0
+offset_bottom = 372.0
+
+[node name="Attack" type="Button" parent="VBoxContainer" unique_id=531509168]
+layout_mode = 2
+text = "ATTACK
+"
+
+[node name="Special" type="Button" parent="VBoxContainer" unique_id=2073946089]
+layout_mode = 2
+text = "SPECIAL"
+
+[node name="Run" type="Button" parent="VBoxContainer" unique_id=1278193742]
+layout_mode = 2
+text = "RUN"

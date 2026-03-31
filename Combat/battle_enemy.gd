@@ -1,0 +1,2 @@
+extends BattleEntity
+class_name BattleEnemy

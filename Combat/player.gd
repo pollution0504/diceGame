@@ -1,0 +1,2 @@
+extends BattleAlly
+class_name BattlePlayer

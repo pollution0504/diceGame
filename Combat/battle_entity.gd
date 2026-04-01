@@ -1,7 +1,7 @@
 extends Node3D
 class_name BattleEntity
 
-var max_health := 30
+var max_health := 100
 var current_health := 0
 
 var entity_name: String = ""
@@ -45,7 +45,7 @@ func TakeDamage(damage : int) -> int:
 	current_health -= damage_taken
 	if !is_alive():
 		die()
-	
+	print("current health: ", current_health)
 	return damage_taken
 	
 

@@ -29,9 +29,11 @@ func RollDice() -> int:
 	var bonus = dice.get("bonus", 0)
 	return randi() % sides + 1 + bonus
 
-
 func Attack(target_entity : BattleEntity):
 	pass
+
+func is_alive() -> bool:
+	return current_health > 0
 
 func _ready():
 	current_health = max_health

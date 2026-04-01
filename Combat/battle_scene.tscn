@@ -2,8 +2,7 @@
 
 [ext_resource type="Texture2D" uid="uid://q1dd1vb8jr1f" path="res://icon.svg" id="1_q5oti"]
 [ext_resource type="Script" uid="uid://7rgs06v8khnv" path="res://Combat/battle_scene.gd" id="1_r0pvh"]
-[ext_resource type="PackedScene" uid="uid://dgjar6b8g0n50" path="res://Combat/combat_menu.tscn" id="2_iw0lx"]
-[ext_resource type="Script" uid="uid://cwsvb470r8u3q" path="res://Combat/player.gd" id="3_hrir6"]
+[ext_resource type="Script" uid="uid://cwsvb470r8u3q" path="res://Combat/battle_player.gd" id="3_hrir6"]
 [ext_resource type="Script" uid="uid://bae01om4annqy" path="res://Combat/battle_minion.gd" id="4_hrir6"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_q5oti"]
@@ -26,8 +25,10 @@ albedo_color = Color(0.106479414, 0.20812607, 0.11392409, 1)
 material = SubResource("StandardMaterial3D_iw0lx")
 size = Vector2(40, 40)
 
-[node name="BattleScene" type="Node3D" unique_id=511297719]
+[node name="BattleScene" type="Node3D" unique_id=511297719 node_paths=PackedStringArray("player", "enemies")]
 script = ExtResource("1_r0pvh")
+player = NodePath("Player")
+enemies = [NodePath("EnemyMinion")]
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=1464599185]
 transform = Transform3D(-0.8660254, -0.43301278, 0.25, 0, 0.49999997, 0.86602545, -0.50000006, 0.75, -0.43301266, 0, 0, 0)
@@ -51,5 +52,3 @@ script = ExtResource("3_hrir6")
 transform = Transform3D(0.3331521, 0, -0.46865195, 0, 0.575, 0, 0.46865195, 0, 0.3331521, 2.6465883, 0.36900675, 1.5834628)
 texture = ExtResource("1_q5oti")
 script = ExtResource("4_hrir6")
-
-[node name="CombatMenu" parent="." unique_id=953059002 instance=ExtResource("2_iw0lx")]

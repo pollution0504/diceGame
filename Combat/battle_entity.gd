@@ -1,7 +1,7 @@
 extends Node3D
 class_name BattleEntity
 
-var max_health := 10
+var max_health := 30
 var current_health := 0
 
 var entity_name: String = ""
@@ -20,6 +20,7 @@ var weapon: Dictionary = {}  # { "name": "Sword", "atk_bonus": 5 }
 var armor: Dictionary = {}   # { "name": "Chestplate", "def_bonus": 3 }
 var dice: Dictionary = {}    # { "sides": 20, "bonus": 0 }
 
+var active := false
 #var items := Array[Consumable]
 
 # Called when the node enters the scene tree for the first time.
@@ -31,9 +32,29 @@ func RollDice() -> int:
 
 func Attack(target_entity : BattleEntity):
 	pass
+	
+func TakeDamage(damage : int) -> int:
+	if randi_range(0,100) < agility:
+		print("dodge")
+		return 0
+	
+	# check for buff. Apply buffs
+	var real_defense = defense
+	
+	var damage_taken = max(damage - real_defense,0)
+	current_health -= damage_taken
+	if !is_alive():
+		die()
+	
+	return damage_taken
+	
 
 func is_alive() -> bool:
 	return current_health > 0
 
 func _ready():
 	current_health = max_health
+	
+func die():
+	print("dead")
+	#play death animation

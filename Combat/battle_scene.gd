@@ -2,13 +2,15 @@ extends Node3D
 
 #Battle Manager
 
+const COMBAT_MENU = preload("uid://dgjar6b8g0n50")
 
 
 
-var player : BattlePlayer
+@export var player : BattlePlayer
 var ally : BattleAlly
+var player_menu : CombatMenu
 
-var enemies : Array[BattleEnemy]
+@export var enemies : Array[BattleEnemy]
 
 
 enum TURNS {ALLIES, ENEMIES}
@@ -18,12 +20,21 @@ var turn_queue: Array = []
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	InstantiateEntities()
 	StartBattle()
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	pass
 
+
+func InstantiateEntities():
+	var cm : CombatMenu = COMBAT_MENU.instantiate()
+	add_child(cm)
+	cm.entity = player
+	player_menu = cm
+	player_menu.attack_pressed.connect(Callable(self,"OnAttackDecision"))
+	
 # Starts the Battle
 func StartBattle():
 	current_turn = TURNS.ALLIES
@@ -31,10 +42,10 @@ func StartBattle():
 
 # Goes to the next turn (allies -> enemies, vice-versa) using queues
 func AdvanceTurn():
-	# Refill the turn queue if empty
+	# If queue is empty after this action, flip to enemies
 	if turn_queue.is_empty():
 		if current_turn == TURNS.ALLIES:
-			turn_queue = [player, ally]
+			turn_queue = [player]
 		else:
 			turn_queue = enemies.duplicate()
 			
@@ -50,22 +61,17 @@ func AdvanceTurn():
 		await AllyTurn(current_actor)
 
 func AllyTurn(actor: BattleEntity):
-	await OnAttackDecision(actor)
+	actor.active = true
+	player_menu.show()
+
 	
-	# If queue is empty after this action, flip to enemies
-	if turn_queue.is_empty():
-		current_turn = TURNS.ENEMIES
-		
-	if not CheckBattleOver():
-		AdvanceTurn()
+
 
 func EnemyTurn(actor: BattleEnemy):
 	# Enemy picks a target and attacks automatically
-	var target = actor.choose_target([player, ally])
+	var target = actor.choose_target([player])
 	if target:
 		var result = actor.Attack(target)
-		print(actor.entity_name + " attacked " + target.entity_name)
-		print("Damage: " + str(result["damage"]))
 
 	# If queue is empty after this action, flip to allies
 	if turn_queue.is_empty():
@@ -75,21 +81,28 @@ func EnemyTurn(actor: BattleEnemy):
 		AdvanceTurn()
 
 func OnAttackDecision(source_entity : BattleEntity):
-	var target_index = await GetTarget()
+	var target_index = GetTarget()
 	var target = enemies[target_index]
 	# WIP attack
 	source_entity.Attack(target)
-		
+	if not CheckBattleOver():
+		AdvanceTurn()
 		
 func GetTarget():
 	# WIP target
-	await get_tree().create_timer(5.0).timeout
-	return 3
+	return 0
 	
 func CheckBattleOver() -> bool:
 	# AI put these lines for checking if all are dead... still trying to understand it lol
-	var all_enemies_dead = enemies.all(func(e): return not e.is_alive())
-	var all_allies_dead = not player.is_alive() and not ally.is_alive()
+	var all_enemies_dead = true
+	for e : BattleEntity in enemies:
+		if e.is_alive():
+			all_enemies_dead = false
+		
+	var all_allies_dead = false
+
+
+
 	
 	if all_enemies_dead:
 		# Do whatever

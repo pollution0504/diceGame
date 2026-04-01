@@ -1,5 +1,7 @@
 [gd_scene format=3 uid="uid://dgjar6b8g0n50"]
 
+[ext_resource type="Script" uid="uid://d4euuubm201l8" path="res://Combat/combat_menu.gd" id="1_2bcnp"]
+
 [node name="CombatMenu" type="Control" unique_id=953059002]
 layout_mode = 3
 anchors_preset = 15
@@ -7,6 +9,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+script = ExtResource("1_2bcnp")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=1570819330]
 layout_mode = 0
@@ -27,3 +30,5 @@ text = "SPECIAL"
 [node name="Run" type="Button" parent="VBoxContainer" unique_id=1278193742]
 layout_mode = 2
 text = "RUN"
+
+[connection signal="pressed" from="VBoxContainer/Attack" to="." method="_on_attack_pressed"]

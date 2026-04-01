@@ -4,6 +4,7 @@
 [ext_resource type="Script" uid="uid://7rgs06v8khnv" path="res://Combat/battle_scene.gd" id="1_r0pvh"]
 [ext_resource type="Script" uid="uid://cwsvb470r8u3q" path="res://Combat/battle_player.gd" id="3_hrir6"]
 [ext_resource type="Script" uid="uid://bae01om4annqy" path="res://Combat/battle_minion.gd" id="4_hrir6"]
+[ext_resource type="Script" uid="uid://c1wwrehvk76cp" path="res://Combat/battle_stats.gd" id="5_hrir6"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_q5oti"]
 sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
@@ -25,10 +26,22 @@ albedo_color = Color(0.106479414, 0.20812607, 0.11392409, 1)
 material = SubResource("StandardMaterial3D_iw0lx")
 size = Vector2(40, 40)
 
+[sub_resource type="Resource" id="Resource_hrir6"]
+script = ExtResource("5_hrir6")
+metadata/_custom_type_script = "uid://c1wwrehvk76cp"
+
+[sub_resource type="Resource" id="Resource_4scgs"]
+script = ExtResource("5_hrir6")
+metadata/_custom_type_script = "uid://c1wwrehvk76cp"
+
+[sub_resource type="Resource" id="Resource_j1oy4"]
+script = ExtResource("5_hrir6")
+metadata/_custom_type_script = "uid://c1wwrehvk76cp"
+
 [node name="BattleScene" type="Node3D" unique_id=511297719 node_paths=PackedStringArray("player", "enemies")]
 script = ExtResource("1_r0pvh")
 player = NodePath("Player")
-enemies = [NodePath("EnemyMinion")]
+enemies = [NodePath("EnemyMinion2"), NodePath("EnemyMinion")]
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=1464599185]
 transform = Transform3D(-0.8660254, -0.43301278, 0.25, 0, 0.49999997, 0.86602545, -0.50000006, 0.75, -0.43301266, 0, 0, 0)
@@ -43,12 +56,27 @@ transform = Transform3D(1, 0, 0, 0, 0.99258864, 0.12152287, 0, -0.12152287, 0.99
 [node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=94951689]
 mesh = SubResource("PlaneMesh_omqys")
 
-[node name="Player" type="Sprite3D" parent="." unique_id=1859564157]
+[node name="Player" type="Sprite3D" parent="." unique_id=1859564157 node_paths=PackedStringArray("health_bar")]
 transform = Transform3D(0.49621236, 0, 0.41206586, 0, 0.645, 0, -0.41206586, 0, 0.49621236, -2.0243435, 0.4978546, 1.8053284)
 texture = ExtResource("1_q5oti")
 script = ExtResource("3_hrir6")
+health_bar = NodePath("ProgressBar")
+stats = SubResource("Resource_hrir6")
+
+[node name="ProgressBar" type="ProgressBar" parent="Player" unique_id=1829208175]
+offset_right = 282.0
+offset_bottom = 27.0
+page = 2.76
 
 [node name="EnemyMinion" type="Sprite3D" parent="." unique_id=559428316]
 transform = Transform3D(0.3331521, 0, -0.46865195, 0, 0.575, 0, 0.46865195, 0, 0.3331521, 2.6465883, 0.36900675, 1.5834628)
 texture = ExtResource("1_q5oti")
 script = ExtResource("4_hrir6")
+stats = SubResource("Resource_4scgs")
+
+[node name="EnemyMinion2" type="Sprite3D" parent="." unique_id=1090227825]
+transform = Transform3D(0.92282075, 0, -0.38522968, 0, 1, 0, 0.38522968, 0, 0.92282075, 2.0842934, 0.54006886, 0.22447383)
+modulate = Color(1.92523e-06, 0.7508766, 0.36557174, 1)
+texture = ExtResource("1_q5oti")
+script = ExtResource("4_hrir6")
+stats = SubResource("Resource_j1oy4")

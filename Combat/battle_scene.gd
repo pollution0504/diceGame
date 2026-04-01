@@ -1,119 +1,129 @@
 extends Node3D
 
-#Battle Manager
+# Signals make the flow much easier to manage
+signal target_selected(index)
 
 const COMBAT_MENU = preload("uid://dgjar6b8g0n50")
 
-
-
 @export var player : BattlePlayer
-var ally : BattleAlly
-var player_menu : CombatMenu
-
 @export var enemies : Array[BattleEnemy]
-
+var player_menu
 
 enum TURNS {ALLIES, ENEMIES}
 var current_turn = TURNS.ALLIES
 
 var turn_queue: Array = []
+var is_targeting := false
+var selection_index := 0
 
-# Called when the node enters the scene tree for the first time.
 func _ready():
-	InstantiateEntities()
-	StartBattle()
+	instantiate_entities()
+	start_battle()
 
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta):
-	pass
-
-
-func InstantiateEntities():
+func instantiate_entities():
 	var cm : CombatMenu = COMBAT_MENU.instantiate()
 	add_child(cm)
 	cm.entity = player
 	player_menu = cm
-	player_menu.attack_pressed.connect(Callable(self,"OnAttackDecision"))
-	
-# Starts the Battle
-func StartBattle():
-	current_turn = TURNS.ALLIES
-	AdvanceTurn()
+	# Connect using the callable syntax
+	player_menu.attack_pressed.connect(_on_attack_decision)
 
-# Goes to the next turn (allies -> enemies, vice-versa) using queues
-func AdvanceTurn():
-	# If queue is empty after this action, flip to enemies
+func start_battle():
+	current_turn = TURNS.ALLIES
+	advance_turn()
+
+func advance_turn():
+	if check_battle_over():
+		return
+
 	if turn_queue.is_empty():
 		if current_turn == TURNS.ALLIES:
-			turn_queue = [player]
-		else:
+			current_turn = TURNS.ENEMIES
 			turn_queue = enemies.duplicate()
-			
+		else:
+			current_turn = TURNS.ALLIES
+			turn_queue = [player] # Add allies here too
+	
 	var current_actor = turn_queue.pop_front()
-	# Skip dead entities
+	
 	if not current_actor.is_alive():
-		AdvanceTurn()
+		advance_turn()
 		return
 	
 	if current_actor is BattleEnemy:
-		await EnemyTurn(current_actor)
+		await enemy_turn(current_actor)
 	else:
-		await AllyTurn(current_actor)
+		await ally_turn(current_actor)
 
-func AllyTurn(actor: BattleEntity):
-	actor.active = true
+func ally_turn(actor: BattleEntity):
 	player_menu.show()
+	# The menu will trigger _on_attack_decision via signal
 
-	
-
-
-func EnemyTurn(actor: BattleEnemy):
-	# Enemy picks a target and attacks automatically
+func enemy_turn(actor: BattleEnemy):
+	await get_tree().create_timer(1.0).timeout # Small pause for "thinking"
 	var target = actor.choose_target([player])
 	if target:
-		var result = actor.Attack(target)
+		actor.Attack(target)
+		print("ouch")
+	advance_turn()
 
-	# If queue is empty after this action, flip to allies
-	if turn_queue.is_empty():
-		current_turn = TURNS.ALLIES
-
-	if not CheckBattleOver():
-		AdvanceTurn()
-
-func OnAttackDecision(source_entity : BattleEntity):
-	var target_index = GetTarget()
-	var target = enemies[target_index]
-	# WIP attack
-	source_entity.Attack(target)
-	if not CheckBattleOver():
-		AdvanceTurn()
-		
-func GetTarget():
-	# WIP target
-	return 0
+func _on_attack_decision(source_entity : BattleEntity):
+	player_menu.hide()
+	var target_idx = await get_target_selection()
 	
-func CheckBattleOver() -> bool:
-	# AI put these lines for checking if all are dead... still trying to understand it lol
-	var all_enemies_dead = true
-	for e : BattleEntity in enemies:
-		if e.is_alive():
-			all_enemies_dead = false
-		
-	var all_allies_dead = false
-
-
-
+	if target_idx != -1:
+		var target = enemies[target_idx]
+		source_entity.Attack(target)
 	
-	if all_enemies_dead:
-		# Do whatever
+	advance_turn()
+
+func get_target_selection() -> int:
+	is_targeting = true
+	selection_index = 0
+	_highlight_enemy(selection_index)
+	
+	# This "waits" until the target_selected signal is emitted in _input
+	var selected_index = await target_selected
+	
+	is_targeting = false
+	_clear_highlights()
+	return selected_index
+
+func _input(event: InputEvent) -> void:
+	if not is_targeting:
+		return
+		
+	if Input.is_action_just_pressed("right"):
+		selection_index = (selection_index + 1) % enemies.size()
+		_update_highlights()
+	elif Input.is_action_just_pressed("left"):
+		selection_index = (selection_index - 1 + enemies.size()) % enemies.size()
+		_update_highlights()
+	elif Input.is_action_just_pressed("ui_accept"): # "Enter" or "Space"
+		target_selected.emit(selection_index)
+
+func _update_highlights():
+	_clear_highlights()
+	_highlight_enemy(selection_index)
+
+func _highlight_enemy(index):
+	# Using modulate for now; if 3D, you might want to toggle a Mesh visibility
+	if enemies[index].is_alive():
+		enemies[index].modulate = Color.RED 
+
+func _clear_highlights():
+	for e in enemies:
+		e.modulate = Color.WHITE
+
+func check_battle_over() -> bool:
+	# filter() is a very clean way to check lists!
+	var alive_enemies = enemies.filter(func(e): return e.is_alive())
+	var alive_allies = [player].filter(func(a): return a.is_alive())
+	
+	if alive_enemies.is_empty():
+		print("Victory!")
 		return true
-	if all_allies_dead:
-		# Again, do whatever
+	if alive_allies.is_empty():
+		print("Game Over!")
 		return true
 	return false
-	
-	
-	
-	
-	
-	

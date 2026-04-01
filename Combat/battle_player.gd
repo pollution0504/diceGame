@@ -1,7 +1,14 @@
 extends BattleAlly
 class_name BattlePlayer
 
-func Attack(target_entity : BattleEntity):
-	var damage_given : int = target_entity.TakeDamage(attack)
-	print("I DID THIS:")
-	print(damage_given)
+@export var health_bar : ProgressBar
+
+func _ready():
+	super()
+	health_bar.max_value = stats.max_health
+	health_bar.value = current_health
+
+func TakeDamage(damage : int) -> int:
+	var dmg = super(damage)
+	health_bar.value = current_health
+	return dmg

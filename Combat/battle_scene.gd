@@ -79,8 +79,8 @@ func OnAttackDecision(source_entity : BattleEntity):
 	var target = enemies[target_index]
 	# WIP attack
 	source_entity.Attack(target)
-	
-	
+		
+		
 func GetTarget():
 	# WIP target
 	await get_tree().create_timer(5.0).timeout

@@ -11,8 +11,6 @@ var ally : BattleAlly
 var enemies : Array[BattleEnemy]
 
 
-
-
 enum TURNS {ALLIES, ENEMIES}
 var current_turn = TURNS.ALLIES
 

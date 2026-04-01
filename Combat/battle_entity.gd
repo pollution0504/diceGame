@@ -1,11 +1,37 @@
 extends Node3D
 class_name BattleEntity
 
-var health_max := 10
-var health_current := 0
+var max_health := 10
+var current_health := 0
+
+var entity_name: String = ""
+var level: int = 1
  
+var max_mp: int = 40
+var current_mp: int = 40
+ 
+var attack: int = 10
+var defense: int = 5
+var agility: int = 10
+var mana: int = 40
+var luck: int = 5
+ 
+var weapon: Dictionary = {}  # { "name": "Sword", "atk_bonus": 5 }
+var armor: Dictionary = {}   # { "name": "Chestplate", "def_bonus": 3 }
+var dice: Dictionary = {}    # { "sides": 20, "bonus": 0 }
+
 #var items := Array[Consumable]
 
 # Called when the node enters the scene tree for the first time.
+func RollDice() -> int:
+	# look for sides, if not, return 20
+	var sides = dice.get("sides", 20)
+	var bonus = dice.get("bonus", 0)
+	return randi() % sides + 1 + bonus
+
+
+func Attack(target_entity : BattleEntity):
+	pass
+
 func _ready():
-	health_current = health_max
+	current_health = max_health

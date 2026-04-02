@@ -63,7 +63,9 @@ func enemy_turn(actor: BattleEnemy):
 	await get_tree().create_timer(1.0).timeout # Small pause for "thinking"
 	var target = actor.choose_target([player])
 	if target:
-		actor.Attack(target)
+		await actor.Attack(target)
+		
+		
 		print("ouch")
 	advance_turn()
 
@@ -73,7 +75,8 @@ func _on_attack_decision(source_entity : BattleEntity):
 	
 	if target_idx != -1:
 		var target = enemies[target_idx]
-		source_entity.Attack(target)
+		await source_entity.Attack(target)
+		
 	
 	advance_turn()
 

@@ -23,11 +23,12 @@ animations = [{
 "speed": 5.0
 }]
 
-[node name="Player" type="Node3D" unique_id=472278561 node_paths=PackedStringArray("health_bar")]
+[node name="Player" type="Node3D" unique_id=472278561 node_paths=PackedStringArray("health_bar", "visual_component")]
 transform = Transform3D(0.645, 0, 0, 0, 0.645, 0, 0, 0, 0.645, 0, 0, 0)
 script = ExtResource("2_2y06h")
 health_bar = NodePath("ProgressBar")
 stats = SubResource("Resource_hrir6")
+visual_component = NodePath("AnimatedSprite3D")
 
 [node name="ProgressBar" type="ProgressBar" parent="." unique_id=166768163]
 offset_right = 282.0

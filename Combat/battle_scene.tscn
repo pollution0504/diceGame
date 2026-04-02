@@ -45,8 +45,10 @@ mesh = SubResource("PlaneMesh_omqys")
 [node name="Player" parent="." unique_id=471347518 instance=ExtResource("2_hrir6")]
 transform = Transform3D(0.4962123, 0, 0.41206592, 0, 0.645, 0, -0.41206592, 0, 0.4962123, -2.0243435, 0.4978546, 1.8053284)
 
-[node name="EnemyMinion" parent="." unique_id=1450971375 instance=ExtResource("3_omqys")]
+[node name="EnemyMinion" parent="." unique_id=1450971375 node_paths=PackedStringArray("visual_component") instance=ExtResource("3_omqys")]
 transform = Transform3D(0.3331521, 0, -0.46865195, 0, 0.575, 0, 0.46865195, 0, 0.3331521, 2.6465883, 0.36900675, 1.5834628)
+visual_component = NodePath(".")
 
-[node name="EnemyMinion2" parent="." unique_id=1198589728 instance=ExtResource("3_omqys")]
+[node name="EnemyMinion2" parent="." unique_id=1198589728 node_paths=PackedStringArray("visual_component") instance=ExtResource("3_omqys")]
 transform = Transform3D(0.5228442, 0, -0.23928848, 0, 0.57500005, 0, 0.23928848, 0, 0.5228442, 1.6465883, 0.36900675, 0.58346283)
+visual_component = NodePath(".")

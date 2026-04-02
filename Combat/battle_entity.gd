@@ -2,6 +2,7 @@ extends Node3D
 class_name BattleEntity
 
 @export var stats : BattleStats
+@export var visual_component : Node3D
 
 var entity_name: String = ""
  

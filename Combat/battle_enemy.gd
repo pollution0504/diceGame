@@ -9,3 +9,10 @@ func choose_target(party: Array) -> BattleEntity:
 		return null
 	# Return a random *alive* party member
 	return alive[randi() % alive.size()]
+	
+func TakeDamage(damage : int) -> int:
+	var dmg =  super(damage)
+	
+	
+	return dmg
+	

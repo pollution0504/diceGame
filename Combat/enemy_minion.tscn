@@ -1,0 +1,15 @@
+[gd_scene format=3 uid="uid://skdn2v5lbciw"]
+
+[ext_resource type="Texture2D" uid="uid://q1dd1vb8jr1f" path="res://icon.svg" id="1_y3r48"]
+[ext_resource type="Script" uid="uid://bae01om4annqy" path="res://Combat/battle_minion.gd" id="2_s1ihv"]
+[ext_resource type="Script" uid="uid://c1wwrehvk76cp" path="res://Combat/battle_stats.gd" id="3_2h51j"]
+
+[sub_resource type="Resource" id="Resource_4scgs"]
+script = ExtResource("3_2h51j")
+metadata/_custom_type_script = "uid://c1wwrehvk76cp"
+
+[node name="EnemyMinion" type="Sprite3D" unique_id=1450971375]
+transform = Transform3D(0.3331521, 0, -0.46865195, 0, 0.575, 0, 0.46865195, 0, 0.3331521, 0, 0, 0)
+texture = ExtResource("1_y3r48")
+script = ExtResource("2_s1ihv")
+stats = SubResource("Resource_4scgs")

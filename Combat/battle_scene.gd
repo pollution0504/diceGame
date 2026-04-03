@@ -3,6 +3,10 @@ extends Node3D
 # Signals make the flow much easier to manage
 signal target_selected(index)
 
+@onready var audio_stream_player_2d = $AudioStreamPlayer2D
+const battle_music = preload("uid://8qdwmyo1p1t8")
+const boxing_bell = preload("uid://bn56vppj5kewb")
+
 const COMBAT_MENU = preload("uid://dgjar6b8g0n50")
 
 @export var player : BattlePlayer
@@ -17,6 +21,14 @@ var is_targeting := false
 var selection_index := 0
 
 func _ready():
+	audio_stream_player_2d.stream = boxing_bell
+	audio_stream_player_2d.play()
+	
+	await audio_stream_player_2d.finished
+	
+	audio_stream_player_2d.stream = battle_music
+	audio_stream_player_2d.play()
+	
 	instantiate_entities()
 	start_battle()
 
@@ -35,7 +47,6 @@ func start_battle():
 func advance_turn():
 	if check_battle_over():
 		return
-
 	if turn_queue.is_empty():
 		if current_turn == TURNS.ALLIES:
 			current_turn = TURNS.ENEMIES
@@ -56,10 +67,12 @@ func advance_turn():
 		await ally_turn(current_actor)
 
 func ally_turn(actor: BattleEntity):
+	print("ally turn")
 	player_menu.show()
 	# The menu will trigger _on_attack_decision via signal
 
 func enemy_turn(actor: BattleEnemy):
+	print("enemy turn")
 	await get_tree().create_timer(1.0).timeout # Small pause for "thinking"
 	var target = actor.choose_target([player])
 	if target:

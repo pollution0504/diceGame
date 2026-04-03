@@ -52,3 +52,5 @@ visual_component = NodePath(".")
 [node name="EnemyMinion2" parent="." unique_id=1198589728 node_paths=PackedStringArray("visual_component") instance=ExtResource("3_omqys")]
 transform = Transform3D(0.5228442, 0, -0.23928848, 0, 0.57500005, 0, 0.23928848, 0, 0.5228442, 1.6465883, 0.36900675, 0.58346283)
 visual_component = NodePath(".")
+
+[node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="." unique_id=1084181741]

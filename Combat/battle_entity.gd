@@ -9,10 +9,6 @@ var entity_name: String = ""
 var current_mp: int = 40
 var current_health := 0
 
-
-
-
-
 var active := false
 #var items := Array[Consumable]
 

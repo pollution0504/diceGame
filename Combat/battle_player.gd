@@ -1,6 +1,9 @@
 extends BattleAlly
 class_name BattlePlayer
 
+const sword_slice = preload("uid://gcae02jhx2mt")
+@onready var audio_stream_player_2d = $"../AudioStreamPlayer2D"
+
 @export var health_bar : ProgressBar
 
 func _ready():
@@ -32,7 +35,6 @@ func PlayAttackAnimation(target_entity : BattleEntity):
 		.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
 	tween.chain().tween_property(self, "global_position:y", global_position.y, 0.2)\
 		.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN)
-	
 	# 3. Return to base
 	tween.chain().tween_property(self, "global_position", original_position, 0.4)\
 		.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN_OUT)

@@ -42,6 +42,7 @@ func instantiate_entities():
 
 func start_battle():
 	current_turn = TURNS.ALLIES
+	turn_queue = [player] # Add allies here too
 	advance_turn()
 
 func advance_turn():

@@ -6,7 +6,6 @@ signal target_selected(index)
 @onready var audio_stream_player_2d = $AudioStreamPlayer2D
 const battle_music = preload("uid://8qdwmyo1p1t8")
 const boxing_bell = preload("uid://bn56vppj5kewb")
-
 const COMBAT_MENU = preload("uid://dgjar6b8g0n50")
 
 @export var player : BattlePlayer
@@ -22,6 +21,7 @@ var selection_index := 0
 
 func _ready():
 	start_battle_music()
+	print("TEST FOR BRANCH")
 	instantiate_entities()
 	start_battle()
 

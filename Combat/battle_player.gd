@@ -6,6 +6,7 @@ const SWORD_SLICE = preload("uid://gcae02jhx2mt")
 @onready var voice_line = $VoiceLine
 const PREPARE_YOURSELF = preload("uid://d2obg761t54y7")
 const RUN = preload("uid://6euvrddgvyhn")
+const KICK = preload("uid://chic5ki2wkemd")
 
 @export var health_bar : ProgressBar
 
@@ -20,6 +21,8 @@ func _ready():
 func TakeDamage(damage : int) -> int:
 	var dmg = super(damage)
 	health_bar.value = current_health
+	voice_line.stream = KICK
+	voice_line.play()
 	return dmg
 
 const INTRO_OFFSET := Vector3(-8, 0, 0)

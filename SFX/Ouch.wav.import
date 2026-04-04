@@ -3,12 +3,12 @@
 importer="wav"
 type="AudioStreamWAV"
 uid="uid://6euvrddgvyhn"
-path="res://.godot/imported/vc_bayonetta_damage02.wav-9120056842525c515780d125b2b00cf0.sample"
+path="res://.godot/imported/Ouch.wav-7c08d5b6cb8f823cab5e8cc810e9e716.sample"
 
 [deps]
 
-source_file="res://SFX/vc_bayonetta_damage02.wav"
-dest_files=["res://.godot/imported/vc_bayonetta_damage02.wav-9120056842525c515780d125b2b00cf0.sample"]
+source_file="res://SFX/Ouch.wav"
+dest_files=["res://.godot/imported/Ouch.wav-7c08d5b6cb8f823cab5e8cc810e9e716.sample"]
 
 [params]
 

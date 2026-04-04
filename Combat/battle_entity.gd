@@ -49,6 +49,7 @@ func is_alive() -> bool:
 
 func _ready():
 	current_health = stats.max_health
+	print("Yo ", current_health)
 	
 func die():
 	print("dead")

@@ -2,14 +2,18 @@ extends BattleAlly
 class_name BattlePlayer
 
 const sword_slice = preload("uid://gcae02jhx2mt")
-@onready var audio_stream_player_2d = $"../AudioStreamPlayer2D"
+@onready var voice_line = $VoiceLine
+const PREPARE_YOURSELF = preload("uid://d2obg761t54y7")
 
 @export var health_bar : ProgressBar
 
 func _ready():
 	super()
+	print("max health: ", stats.max_health)
+	print("current health: ", current_health)
 	health_bar.max_value = stats.max_health
 	health_bar.value = current_health
+	print("bar percent-ish value: ", health_bar.value, "/", health_bar.max_value)
 
 func TakeDamage(damage : int) -> int:
 	var dmg = super(damage)
@@ -19,6 +23,17 @@ func TakeDamage(damage : int) -> int:
 func Attack(target_entity : BattleEntity):
 	await PlayAttackAnimation(target_entity)
 	super(target_entity)
+	
+func PlayIntroAnimation():
+	var original_position = global_position
+	global_position = original_position + Vector3(-8, 0, 0)
+	var tween = get_tree().create_tween()
+	tween.tween_property(self, "global_position", original_position, 0.8) \
+		.set_trans(Tween.TRANS_CUBIC) \
+		.set_ease(Tween.EASE_OUT)
+	voice_line.stream = PREPARE_YOURSELF
+	voice_line.play()
+	await tween.finished
 	
 func PlayAttackAnimation(target_entity : BattleEntity):
 	var original_position = global_position

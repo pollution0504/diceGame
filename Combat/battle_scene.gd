@@ -21,7 +21,7 @@ var selection_index := 0
 
 func _ready():
 	start_battle_music()
-	print("TEST FOR BRANCH")
+	player.PlayIntroAnimation()
 	instantiate_entities()
 	start_battle()
 
@@ -29,7 +29,7 @@ func start_battle_music() -> void:
 	audio_stream_player_2d.stream = boxing_bell
 	audio_stream_player_2d.play()
 	
-	await audio_stream_player_2d.finished
+	await get_tree().create_timer(3).timeout
 	
 	audio_stream_player_2d.stream = battle_music
 	audio_stream_player_2d.play()

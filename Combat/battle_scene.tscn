@@ -54,4 +54,5 @@ transform = Transform3D(0.5228442, 0, -0.23928848, 0, 0.57500005, 0, 0.23928848,
 visual_component = NodePath(".")
 
 [node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="." unique_id=1084181741]
-volume_db = -20.07
+volume_db = -15.509
+max_polyphony = 41

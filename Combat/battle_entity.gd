@@ -10,6 +10,8 @@ var current_mp: int = 40
 var current_health := 0
 
 var active := false
+
+signal on_death(BattleEntity)
 #var items := Array[Consumable]
 
 # Called when the node enters the scene tree for the first time.
@@ -50,6 +52,7 @@ func _ready():
 	
 func die():
 	print("dead")
+	on_death.emit(self)
 	#play death animation
 	
 func PlayHitImpactTween():

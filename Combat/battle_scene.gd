@@ -40,6 +40,8 @@ func instantiate_entities():
 	cm.entity = player
 	player_menu = cm
 	# Connect using the callable syntax
+	for e in enemies:
+		e.on_death.connect(enemy_death)
 	player_menu.attack_pressed.connect(_on_attack_decision)
 
 func start_battle():
@@ -84,6 +86,10 @@ func enemy_turn(actor: BattleEnemy):
 		
 		print("ouch")
 	advance_turn()
+
+func enemy_death(actor: BattleEnemy):
+	enemies.remove_at(enemies.find(actor))
+	print("DEATH")
 
 func _on_attack_decision(source_entity : BattleEntity):
 	player_menu.hide()

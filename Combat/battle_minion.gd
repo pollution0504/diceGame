@@ -28,3 +28,7 @@ func PlayAttackAnimation(target_entity : BattleEntity):
 	# Wait for the whole sequence to finish
 	await tween.finished
 	return null
+
+func die():
+	super()
+	hide()

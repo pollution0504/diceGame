@@ -7,10 +7,12 @@ signal target_selected(index)
 const battle_music = preload("uid://8qdwmyo1p1t8")
 const boxing_bell = preload("uid://bn56vppj5kewb")
 const COMBAT_MENU = preload("uid://dgjar6b8g0n50")
+const CURSOR = preload("uid://bveddx3blonlq")
 
 @export var player : BattlePlayer
 @export var enemies : Array[BattleEnemy]
 var player_menu
+var selection_cursor : Node3D
 
 enum TURNS {ALLIES, ENEMIES}
 var current_turn = TURNS.ALLIES
@@ -23,6 +25,11 @@ func _ready():
 	start_battle_music()
 	player.PlayIntroAnimation()
 	instantiate_entities()
+	
+	selection_cursor = CURSOR.instantiate()
+	add_child(selection_cursor)
+	selection_cursor.hide()
+	
 	start_battle()
 
 func start_battle_music() -> void:
@@ -132,13 +139,13 @@ func _update_highlights():
 	_highlight_enemy(selection_index)
 
 func _highlight_enemy(index):
-	# Using modulate for now; if 3D, you might want to toggle a Mesh visibility
-	if enemies[index].is_alive():
-		enemies[index].modulate = Color.RED 
+	var target = enemies[index]
+	if target.is_alive():
+		selection_cursor.global_position = target.global_position + Vector3(0, 0.9, 0)
+		selection_cursor.show()
 
 func _clear_highlights():
-	for e in enemies:
-		e.modulate = Color.WHITE
+	selection_cursor.hide()
 
 func check_battle_over() -> bool:
 	# filter() is a very clean way to check lists!

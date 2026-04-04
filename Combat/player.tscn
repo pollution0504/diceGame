@@ -36,7 +36,9 @@ offset_right = 282.0
 offset_bottom = 27.0
 
 [node name="AnimatedSprite3D" type="AnimatedSprite3D" parent="." unique_id=1262368255]
+billboard = 2
 sprite_frames = SubResource("SpriteFrames_2y06h")
 autoplay = "default"
 
-[node name="VoiceLine" type="AudioStreamPlayer2D" parent="." unique_id=1622817292]
+[node name="VoiceLine" type="AudioStreamPlayer" parent="." unique_id=1063749742]
+volume_db = -10.85

@@ -51,6 +51,12 @@ func _ready():
 	current_health = stats.max_health
 	print("Yo ", current_health)
 	
+const HIT_FLASH_DURATION := 0.1
+const HIT_FADE_DURATION := 0.2
+const KNOCKBACK_DISTANCE := 0.3
+const KNOCKBACK_DURATION := 0.05
+const SETTLE_DURATION := 0.25
+
 func die():
 	print("dead")
 	on_death.emit(self)
@@ -64,22 +70,21 @@ func PlayHitImpactTween():
 	
 	# --- VISUAL FEEDBACK (Color) ---
 	# Flash red quickly
-	tween.tween_property(visual_component, "modulate", Color.RED, 0.1)
-	# Fade back to white, starting after 0.1s
-	tween.chain().tween_property(visual_component, "modulate", Color.WHITE, 0.2)
+	tween.tween_property(visual_component, "modulate", Color.RED, HIT_FLASH_DURATION)
+	# Fade back to white, starting after HIT_FLASH_DURATION
+	tween.chain().tween_property(visual_component, "modulate", Color.WHITE, HIT_FADE_DURATION)
 	
 	
 	# --- PHYSICAL FEEDBACK (Position) ---
 	# Calculate 'backwards' based on where the sprite is facing (local -z)
-	var knockback_distance = 0.3
-	var hit_pos = original_pos - (visual_component.transform.basis.z * knockback_distance)
+	var hit_pos = original_pos - (visual_component.transform.basis.z * KNOCKBACK_DISTANCE)
 	
 	# Jump back on impact
-	tween.tween_property(visual_component, "position", hit_pos, 0.05)\
+	tween.tween_property(visual_component, "position", hit_pos, KNOCKBACK_DURATION)\
 		.set_trans(Tween.TRANS_QUART).set_ease(Tween.EASE_OUT)
 		
 	# Settle back to original position
-	tween.chain().tween_property(visual_component, "position", original_pos, 0.25)\
+	tween.chain().tween_property(visual_component, "position", original_pos, SETTLE_DURATION)\
 		.set_trans(Tween.TRANS_ELASTIC).set_ease(Tween.EASE_OUT)
 
 

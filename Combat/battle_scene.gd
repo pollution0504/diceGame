@@ -11,6 +11,11 @@ const CURSOR = preload("uid://bveddx3blonlq")
 
 @export var player : BattlePlayer
 @export var enemies : Array[BattleEnemy]
+const BELL_TIMER_DURATION := 3.0
+const ENEMY_TURN_DELAY := 1.0
+const CURSOR_HEIGHT_OFFSET := 0.9
+const CURSOR_LERP_DURATION := 0.1
+
 var player_menu
 var selection_cursor : Node3D
 var cursor_tween : Tween
@@ -37,7 +42,7 @@ func start_battle_music() -> void:
 	audio_stream_player_2d.stream = boxing_bell
 	audio_stream_player_2d.play()
 	
-	await get_tree().create_timer(3).timeout
+	await get_tree().create_timer(BELL_TIMER_DURATION).timeout
 	
 	audio_stream_player_2d.stream = battle_music
 	audio_stream_player_2d.play()
@@ -86,7 +91,7 @@ func ally_turn(actor: BattleEntity):
 
 func enemy_turn(actor: BattleEnemy):
 	print("enemy turn")
-	await get_tree().create_timer(1.0).timeout # Small pause for "thinking"
+	await get_tree().create_timer(ENEMY_TURN_DELAY).timeout # Small pause for "thinking"
 	var target = actor.choose_target([player])
 	if target:
 		await actor.Attack(target)
@@ -141,13 +146,13 @@ func _update_highlights():
 func _highlight_enemy(index):
 	var target = enemies[index]
 	if target.is_alive():
-		var target_pos = target.global_position + Vector3(0, 0.9, 0)
+		var target_pos = target.global_position + Vector3(0, CURSOR_HEIGHT_OFFSET, 0)
 		
 		if selection_cursor.visible:
 			if cursor_tween:
 				cursor_tween.kill()
 			cursor_tween = get_tree().create_tween()
-			cursor_tween.tween_property(selection_cursor, "global_position", target_pos, 0.1)\
+			cursor_tween.tween_property(selection_cursor, "global_position", target_pos, CURSOR_LERP_DURATION)\
 				.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
 		else:
 			selection_cursor.global_position = target_pos

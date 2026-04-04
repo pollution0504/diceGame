@@ -21,14 +21,26 @@ func TakeDamage(damage : int) -> int:
 	health_bar.value = current_health
 	return dmg
 
+const INTRO_OFFSET := Vector3(-8, 0, 0)
+const INTRO_DURATION := 0.8
+
+const JUMP_TAKEOFF_DISTANCE := 3.5
+const IMPACT_OFFSET_DISTANCE := 0.8
+const RUN_UP_DURATION := 0.3
+const JUMP_DURATION := 0.5
+const JUMP_HEIGHT := 2.0
+const HOP_BACK_DURATION := 0.6
+const HOP_BACK_HEIGHT := 1.0
+const SWORD_SLICE_START_TIME := 0.17
+
 func Attack(target_entity : BattleEntity):
 	await PlayAttackAnimation(target_entity)
 	
 func PlayIntroAnimation():
 	var original_position = global_position
-	global_position = original_position + Vector3(-8, 0, 0)
+	global_position = original_position + INTRO_OFFSET
 	var tween = get_tree().create_tween()
-	tween.tween_property(self, "global_position", original_position, 0.8) \
+	tween.tween_property(self, "global_position", original_position, INTRO_DURATION) \
 		.set_trans(Tween.TRANS_CUBIC) \
 		.set_ease(Tween.EASE_OUT)
 	voice_line.stream = PREPARE_YOURSELF
@@ -44,44 +56,42 @@ func PlayAttackAnimation(target_entity : BattleEntity):
 
 	var dir = (target_pos - original_pos).normalized()
 	# Takeoff point
-	var jump_start_pos = target_pos - (dir * 3.5)
+	var jump_start_pos = target_pos - (dir * JUMP_TAKEOFF_DISTANCE)
 	jump_start_pos.y = ground_y
 
 	# Impact point
-	var impact_pos = target_pos - (dir * 0.8)
+	var impact_pos = target_pos - (dir * IMPACT_OFFSET_DISTANCE)
 	impact_pos.y = ground_y
 
 	var tween = get_tree().create_tween()
 
 	# 1. RUN UP
-	tween.tween_property(self, "global_position", jump_start_pos, 0.3)\
+	tween.tween_property(self, "global_position", jump_start_pos, RUN_UP_DURATION)\
 		.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
 
 	# 2. PROPER PARABOLIC JUMP
-	var jump_height = 2.0
 	var jump_arc = func(t: float):
 		var pos = jump_start_pos.lerp(impact_pos, t)
 		# Parabolic formula: y = -4h(t-0.5)^2 + h
-		pos.y = ground_y + (-4 * jump_height * pow(t - 0.5, 2) + jump_height)
+		pos.y = ground_y + (-4 * JUMP_HEIGHT * pow(t - 0.5, 2) + JUMP_HEIGHT)
 		global_position = pos
 
-	tween.chain().tween_method(jump_arc, 0.0, 1.0, 0.5)
+	tween.chain().tween_method(jump_arc, 0.0, 1.0, JUMP_DURATION)
 
 	# 3. IMPACT (Trigger damage and sound)
 	tween.tween_callback(func(): 
 		voice_line.stream = SWORD_SLICE
-		voice_line.play(0.17)
+		voice_line.play(SWORD_SLICE_START_TIME)
 		super.Attack(target_entity)
 	)
 
 	# 4. PARABOLIC HOP BACK
-	var hop_height = 1.0
 	var hop_arc = func(t: float):
 		var pos = impact_pos.lerp(original_pos, t)
-		pos.y = ground_y + (-4 * hop_height * pow(t - 0.5, 2) + hop_height)
+		pos.y = ground_y + (-4 * HOP_BACK_HEIGHT * pow(t - 0.5, 2) + HOP_BACK_HEIGHT)
 		global_position = pos
 
-	tween.chain().tween_method(hop_arc, 0.0, 1.0, 0.6)
+	tween.chain().tween_method(hop_arc, 0.0, 1.0, HOP_BACK_DURATION)
 
 	await tween.finished
 	return null

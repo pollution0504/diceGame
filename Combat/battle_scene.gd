@@ -13,6 +13,7 @@ const CURSOR = preload("uid://bveddx3blonlq")
 @export var enemies : Array[BattleEnemy]
 var player_menu
 var selection_cursor : Node3D
+var cursor_tween : Tween
 
 enum TURNS {ALLIES, ENEMIES}
 var current_turn = TURNS.ALLIES
@@ -135,14 +136,22 @@ func _input(event: InputEvent) -> void:
 		target_selected.emit(selection_index)
 
 func _update_highlights():
-	_clear_highlights()
 	_highlight_enemy(selection_index)
 
 func _highlight_enemy(index):
 	var target = enemies[index]
 	if target.is_alive():
-		selection_cursor.global_position = target.global_position + Vector3(0, 0.9, 0)
-		selection_cursor.show()
+		var target_pos = target.global_position + Vector3(0, 0.9, 0)
+		
+		if selection_cursor.visible:
+			if cursor_tween:
+				cursor_tween.kill()
+			cursor_tween = get_tree().create_tween()
+			cursor_tween.tween_property(selection_cursor, "global_position", target_pos, 0.1)\
+				.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+		else:
+			selection_cursor.global_position = target_pos
+			selection_cursor.show()
 
 func _clear_highlights():
 	selection_cursor.hide()

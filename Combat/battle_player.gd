@@ -100,7 +100,7 @@ func PlayAttackAnimation(target_entity : BattleEntity):
 func PlayRunAnimation():
 	var original_position = global_position
 	# move offscreen to the left 
-	var run_target = original_position + Vector3(-8, 0, 0)
+	var run_target = original_position + INTRO_OFFSET
 	var tween = get_tree().create_tween()
 	tween.tween_property(self, "global_position", run_target, 0.6) \
 		.set_trans(Tween.TRANS_LINEAR) \

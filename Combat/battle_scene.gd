@@ -170,9 +170,11 @@ func check_battle_over() -> bool:
 	
 	if alive_enemies.is_empty():
 		print("Victory!")
+		end_battle()
 		return true
 	if alive_allies.is_empty():
 		print("Game Over!")
+		end_battle()
 		return true
 	return false
 	

@@ -56,6 +56,8 @@ func instantiate_entities():
 	for e in enemies:
 		e.on_death.connect(enemy_death)
 	player_menu.attack_pressed.connect(_on_attack_decision)
+	player_menu.run_pressed.connect(_on_run_decision)
+	
 
 func start_battle():
 	current_turn = TURNS.ALLIES
@@ -173,3 +175,10 @@ func check_battle_over() -> bool:
 		print("Game Over!")
 		return true
 	return false
+	
+func _on_run_decision(source_entity : BattleEntity):
+	await source_entity.PlayRunAnimation()
+	end_battle()
+	
+func end_battle():
+	get_tree().quit()

@@ -5,6 +5,7 @@ const SWORD_SLICE = preload("uid://gcae02jhx2mt")
 
 @onready var voice_line = $VoiceLine
 const PREPARE_YOURSELF = preload("uid://d2obg761t54y7")
+const RUN = preload("uid://6euvrddgvyhn")
 
 @export var health_bar : ProgressBar
 
@@ -95,3 +96,16 @@ func PlayAttackAnimation(target_entity : BattleEntity):
 
 	await tween.finished
 	return null
+	
+func PlayRunAnimation():
+	var original_position = global_position
+	# move offscreen to the left 
+	var run_target = original_position + Vector3(-8, 0, 0)
+	var tween = get_tree().create_tween()
+	tween.tween_property(self, "global_position", run_target, 0.6) \
+		.set_trans(Tween.TRANS_LINEAR) \
+		.set_ease(Tween.EASE_IN)
+
+	voice_line.stream = RUN
+	voice_line.play()
+	await tween.finished

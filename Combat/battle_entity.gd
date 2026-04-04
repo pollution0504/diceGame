@@ -19,11 +19,9 @@ func RollDice() -> int:
 	var bonus = stats.dice.get("bonus", 0)
 	return randi() % sides + 1 + bonus
 
-
 func Attack(target_entity : BattleEntity):
 	var damage_given : int = target_entity.TakeDamage(stats.attack)
 	print("I hit enemy ", target_entity, " for ", damage_given)
-
 	
 func TakeDamage(damage : int) -> int:
 	if randi_range(0,100) < stats.agility:
@@ -81,3 +79,6 @@ func PlayHitImpactTween():
 
 func PlayAttackAnimation(target_entity : BattleEntity):
 	return null 
+
+func PlayRunAnimation():
+	return null

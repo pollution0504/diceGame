@@ -41,6 +41,7 @@ func instantiate_entities():
 	player_menu = cm
 	# Connect using the callable syntax
 	player_menu.attack_pressed.connect(_on_attack_decision)
+	player_menu.run_pressed.connect(_on_run_decision)
 
 func start_battle():
 	current_turn = TURNS.ALLIES
@@ -96,6 +97,10 @@ func _on_attack_decision(source_entity : BattleEntity):
 	
 	advance_turn()
 
+func _on_run_decision(source_entity : BattleEntity):
+	await source_entity.PlayRunAnimation()
+	end_battle()
+	
 func get_target_selection() -> int:
 	is_targeting = true
 	selection_index = 0
@@ -144,5 +149,9 @@ func check_battle_over() -> bool:
 		return true
 	if alive_allies.is_empty():
 		print("Game Over!")
+		end_battle()
 		return true
 	return false
+
+func end_battle():
+	get_tree().quit()

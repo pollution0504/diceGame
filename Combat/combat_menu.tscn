@@ -23,12 +23,15 @@ layout_mode = 2
 text = "ATTACK
 "
 
-[node name="Special" type="Button" parent="VBoxContainer" unique_id=2073946089]
+[node name="Item" type="Button" parent="VBoxContainer" unique_id=2073946089]
 layout_mode = 2
-text = "SPECIAL"
+text = "ITEM
+"
 
 [node name="Run" type="Button" parent="VBoxContainer" unique_id=1278193742]
 layout_mode = 2
 text = "RUN"
 
 [connection signal="pressed" from="VBoxContainer/Attack" to="." method="_on_attack_pressed"]
+[connection signal="pressed" from="VBoxContainer/Item" to="." method="_on_item_pressed"]
+[connection signal="pressed" from="VBoxContainer/Run" to="." method="_on_run_pressed"]

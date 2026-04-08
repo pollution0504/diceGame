@@ -9,14 +9,16 @@ const boxing_bell = preload("uid://bn56vppj5kewb")
 const COMBAT_MENU = preload("uid://dgjar6b8g0n50")
 const CURSOR = preload("uid://bveddx3blonlq")
 
-@export var player : BattlePlayer
-@export var enemies : Array[BattleEnemy]
+@export var battle_entities : Array[PackedScene]
+var allies : Array[BattleAlly]
+var enemies : Array[BattleEnemy]
+
+
 const BELL_TIMER_DURATION := 3.0
 const ENEMY_TURN_DELAY := 1.0
 const CURSOR_HEIGHT_OFFSET := 0.9
 const CURSOR_LERP_DURATION := 0.1
 
-var player_menu
 var selection_cursor : Node3D
 var cursor_tween : Tween
 
@@ -27,15 +29,20 @@ var turn_queue: Array = []
 var is_targeting := false
 var selection_index := 0
 
+var entity_spacing : Vector3 = Vector3(-2,0,2)
+
 func _ready():
 	start_battle_music()
-	player.PlayIntroAnimation()
 	instantiate_entities()
 	
 	selection_cursor = CURSOR.instantiate()
 	add_child(selection_cursor)
 	selection_cursor.hide()
 	
+	for enemy in enemies:
+		enemy.PlayIntroAnimation()
+	for ally in allies:
+		ally.PlayIntroAnimation()
 	start_battle()
 
 func start_battle_music() -> void:
@@ -48,20 +55,45 @@ func start_battle_music() -> void:
 	audio_stream_player_2d.play()
 
 func instantiate_entities():
-	var cm : CombatMenu = COMBAT_MENU.instantiate()
-	add_child(cm)
-	cm.entity = player
-	player_menu = cm
+	for e in battle_entities:
+		var entity = e.instantiate()
+		if entity is BattleAlly:
+			allies.append(entity)
+		elif entity is BattleEnemy:
+			enemies.append(entity)
+		add_child(entity)
+		
+	
+	var i = 1
+	for ally in allies:
+		#do positioning
+		if i == 1:
+			ally.position += i * entity_spacing + Vector3(0,0.5,0)
+		if i == 2:
+			ally.position += Vector3(-4,0.5,-4)
+			
+		i += 1
+		
+		var cm : CombatMenu = COMBAT_MENU.instantiate()
+		ally.add_child(cm)
+		#hopefully this doesnt fuck up
+		ally.combat_menu = cm
+		cm.entity = ally
+		cm.hide()
+		ally.combat_menu.attack_pressed.connect(_on_attack_decision)
+		ally.combat_menu.run_pressed.connect(_on_run_decision)
 	# Connect using the callable syntax
+	i = 1
 	for e in enemies:
+		e.position += -1 * i * entity_spacing + Vector3(0,0.5,0)
+		i += 1
 		e.on_death.connect(enemy_death)
-	player_menu.attack_pressed.connect(_on_attack_decision)
-	player_menu.run_pressed.connect(_on_run_decision)
+
 	
 
 func start_battle():
 	current_turn = TURNS.ALLIES
-	turn_queue = [player] # Add allies here too
+	turn_queue = allies.duplicate() # Add allies here too
 	advance_turn()
 
 func advance_turn():
@@ -73,7 +105,7 @@ func advance_turn():
 			turn_queue = enemies.duplicate()
 		else:
 			current_turn = TURNS.ALLIES
-			turn_queue = [player] # Add allies here too
+			turn_queue = allies.duplicate() # Add allies here too
 	
 	var current_actor = turn_queue.pop_front()
 	
@@ -86,19 +118,17 @@ func advance_turn():
 	else:
 		await ally_turn(current_actor)
 
-func ally_turn(actor: BattleEntity):
-	print("ally turn")
-	player_menu.show()
+func ally_turn(actor: BattleAlly):
+	print(actor.name," ally turn")
+	actor.combat_menu.show()
 	# The menu will trigger _on_attack_decision via signal
 
 func enemy_turn(actor: BattleEnemy):
 	print("enemy turn")
 	await get_tree().create_timer(ENEMY_TURN_DELAY).timeout # Small pause for "thinking"
-	var target = actor.choose_target([player])
+	var target = actor.choose_target([allies.pick_random()])
 	if target:
 		await actor.Attack(target)
-		
-		
 		print("ouch")
 	advance_turn()
 
@@ -106,14 +136,13 @@ func enemy_death(actor: BattleEnemy):
 	enemies.remove_at(enemies.find(actor))
 	print("DEATH")
 
-func _on_attack_decision(source_entity : BattleEntity):
-	player_menu.hide()
+func _on_attack_decision(source_entity : BattleAlly):
+	source_entity.combat_menu.hide()
 	var target_idx = await get_target_selection()
 	
 	if target_idx != -1:
 		var target = enemies[target_idx]
 		await source_entity.Attack(target)
-		
 	
 	advance_turn()
 
@@ -166,7 +195,7 @@ func _clear_highlights():
 func check_battle_over() -> bool:
 	# filter() is a very clean way to check lists!
 	var alive_enemies = enemies.filter(func(e): return e.is_alive())
-	var alive_allies = [player].filter(func(a): return a.is_alive())
+	var alive_allies = allies.filter(func(a): return a.is_alive())
 	
 	if alive_enemies.is_empty():
 		print("Victory!")

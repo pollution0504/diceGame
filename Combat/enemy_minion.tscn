@@ -8,8 +8,10 @@
 script = ExtResource("3_2h51j")
 metadata/_custom_type_script = "uid://c1wwrehvk76cp"
 
-[node name="EnemyMinion" type="Sprite3D" unique_id=1450971375]
+[node name="EnemyMinion" type="Sprite3D" unique_id=1450971375 node_paths=PackedStringArray("visual_component")]
 transform = Transform3D(0.3331521, 0, -0.46865195, 0, 0.575, 0, 0.46865195, 0, 0.3331521, 0, 0, 0)
+billboard = 2
 texture = ExtResource("1_y3r48")
 script = ExtResource("2_s1ihv")
 stats = SubResource("Resource_4scgs")
+visual_component = NodePath(".")

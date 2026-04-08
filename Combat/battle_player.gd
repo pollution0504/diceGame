@@ -1,12 +1,12 @@
 extends BattleAlly
 class_name BattlePlayer
 
-const SWORD_SLICE = preload("uid://gcae02jhx2mt")
+const SWORD_SLICE = preload("res://SFX/SwordSlice.mp3")
 
 @onready var voice_line = $VoiceLine
-const PREPARE_YOURSELF = preload("uid://d2obg761t54y7")
-const RUN = preload("uid://6euvrddgvyhn")
-const KICK = preload("uid://chic5ki2wkemd")
+const PREPARE_YOURSELF = preload("res://SFX/PrepareYourself.wav")
+const RUN = preload("res://SFX/hurt.sfx.wav")
+const KICK = preload("res://SFX/kick.sfx.wav")
 
 @export var health_bar : ProgressBar
 

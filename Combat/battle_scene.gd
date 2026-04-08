@@ -4,10 +4,10 @@ extends Node3D
 signal target_selected(index)
 
 @onready var audio_stream_player_2d = $AudioStreamPlayer2D
-const battle_music = preload("uid://8qdwmyo1p1t8")
-const boxing_bell = preload("uid://bn56vppj5kewb")
-const COMBAT_MENU = preload("uid://dgjar6b8g0n50")
-const CURSOR = preload("uid://bveddx3blonlq")
+const battle_music = preload("res://Music/fd_music.mp3")
+const boxing_bell = preload("res://SFX/bell_sfx.mp3")
+const COMBAT_MENU = preload("res://Combat/combat_menu.tscn")
+const CURSOR = preload("res://Combat/cursor.tscn")
 
 @export var battle_entities : Array[PackedScene]
 var allies : Array[BattleAlly]

@@ -2,13 +2,13 @@
 
 importer="wav"
 type="AudioStreamWAV"
-uid="uid://chic5ki2wkemd"
-path="res://.godot/imported/Kick.wav-4291e5bb980eb39795f30ba3f748e54f.sample"
+uid="uid://6euvrddgvyhn"
+path="res://.godot/imported/hurt.sfx.wav-3f243eb5cbfb81566cdacb310f74da57.sample"
 
 [deps]
 
-source_file="res://SFX/Kick.wav"
-dest_files=["res://.godot/imported/Kick.wav-4291e5bb980eb39795f30ba3f748e54f.sample"]
+source_file="res://SFX/hurt.sfx.wav"
+dest_files=["res://.godot/imported/hurt.sfx.wav-3f243eb5cbfb81566cdacb310f74da57.sample"]
 
 [params]
 

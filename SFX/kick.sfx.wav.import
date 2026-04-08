@@ -2,13 +2,13 @@
 
 importer="wav"
 type="AudioStreamWAV"
-uid="uid://6euvrddgvyhn"
-path="res://.godot/imported/Ouch.wav-7c08d5b6cb8f823cab5e8cc810e9e716.sample"
+uid="uid://chic5ki2wkemd"
+path="res://.godot/imported/kick.sfx.wav-0701461fc3dd92a0d98d90afa1736461.sample"
 
 [deps]
 
-source_file="res://SFX/Ouch.wav"
-dest_files=["res://.godot/imported/Ouch.wav-7c08d5b6cb8f823cab5e8cc810e9e716.sample"]
+source_file="res://SFX/kick.sfx.wav"
+dest_files=["res://.godot/imported/kick.sfx.wav-0701461fc3dd92a0d98d90afa1736461.sample"]
 
 [params]
 

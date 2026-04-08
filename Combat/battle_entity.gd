@@ -90,3 +90,6 @@ func PlayHitImpactTween():
 
 func PlayAttackAnimation(target_entity : BattleEntity):
 	return null 
+
+func PlayIntroAnimation():
+	return null

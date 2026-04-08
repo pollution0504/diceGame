@@ -24,10 +24,9 @@ albedo_color = Color(0.106479414, 0.20812607, 0.11392409, 1)
 material = SubResource("StandardMaterial3D_iw0lx")
 size = Vector2(40, 40)
 
-[node name="BattleScene" type="Node3D" unique_id=511297719 node_paths=PackedStringArray("player", "enemies")]
+[node name="BattleScene" type="Node3D" unique_id=511297719]
 script = ExtResource("1_r0pvh")
-player = NodePath("Player")
-enemies = [NodePath("EnemyMinion"), NodePath("EnemyMinion2")]
+battle_entities = Array[PackedScene]([ExtResource("2_hrir6"), ExtResource("2_hrir6"), ExtResource("3_omqys"), ExtResource("3_omqys")])
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=1464599185]
 transform = Transform3D(-0.8660254, -0.43301278, 0.25, 0, 0.49999997, 0.86602545, -0.50000006, 0.75, -0.43301266, 0, 0, 0)
@@ -36,24 +35,12 @@ transform = Transform3D(-0.8660254, -0.43301278, 0.25, 0, 0.49999997, 0.86602545
 environment = SubResource("Environment_omqys")
 
 [node name="Camera3D" type="Camera3D" parent="." unique_id=1749398744]
-transform = Transform3D(1, 0, 0, 0, 0.99258864, 0.12152287, 0, -0.12152287, 0.99258864, 0, 2.096791, 12.3559265)
+transform = Transform3D(1, 0, 0, 0, 0.99258864, 0.12152287, 0, -0.12152287, 0.99258864, -0.006349921, 2.096791, 12.35546)
 fov = 20.0
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=94951689]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.013476372, -0.010877609, 0.011166096)
 mesh = SubResource("PlaneMesh_omqys")
-
-[node name="Player" parent="." unique_id=471347518 instance=ExtResource("2_hrir6")]
-transform = Transform3D(0.4962123, 0, 0.41206592, 0, 0.645, 0, -0.41206592, 0, 0.4962123, -2.0243435, 0.4978546, 1.8053284)
-
-[node name="EnemyMinion" parent="." unique_id=1450971375 node_paths=PackedStringArray("visual_component") instance=ExtResource("3_omqys")]
-transform = Transform3D(0.3331521, 0, -0.46865195, 0, 0.575, 0, 0.46865195, 0, 0.3331521, 2.6465883, 0.36900675, 1.5834628)
-billboard = 2
-visual_component = NodePath(".")
-
-[node name="EnemyMinion2" parent="." unique_id=1198589728 node_paths=PackedStringArray("visual_component") instance=ExtResource("3_omqys")]
-transform = Transform3D(0.5228442, 0, -0.23928848, 0, 0.57500005, 0, 0.23928848, 0, 0.5228442, 1.6465883, 0.36900675, 0.58346283)
-billboard = 2
-visual_component = NodePath(".")
 
 [node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="." unique_id=1084181741]
 volume_db = -15.509

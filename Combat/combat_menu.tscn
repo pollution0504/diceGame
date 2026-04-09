@@ -2,6 +2,12 @@
 
 [ext_resource type="Script" uid="uid://d4euuubm201l8" path="res://Combat/combat_menu.gd" id="1_2bcnp"]
 
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_2bcnp"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_lmj7a"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ejhj4"]
+
 [node name="CombatMenu" type="Control" unique_id=953059002]
 layout_mode = 3
 anchors_preset = 15
@@ -11,25 +17,30 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_2bcnp")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=1570819330]
+[node name="OptionHolder" type="Control" parent="." unique_id=1511333642]
+anchors_preset = 0
+offset_left = 300.0
+offset_top = 300.0
+offset_right = 340.0
+offset_bottom = 339.99982
+
+[node name="AttackLabel" type="Label" parent="OptionHolder" unique_id=439881438]
 layout_mode = 0
-offset_left = 375.0
-offset_top = 271.0
-offset_right = 445.0
-offset_bottom = 372.0
+offset_right = 70.0
+offset_bottom = 23.0
+theme_override_styles/normal = SubResource("StyleBoxEmpty_2bcnp")
+text = "ATTACK"
 
-[node name="Attack" type="Button" parent="VBoxContainer" unique_id=531509168]
-layout_mode = 2
-text = "ATTACK
-"
-
-[node name="Special" type="Button" parent="VBoxContainer" unique_id=2073946089]
-layout_mode = 2
+[node name="SkillLabel" type="Label" parent="OptionHolder" unique_id=1794168313]
+layout_mode = 0
+offset_right = 70.0
+offset_bottom = 23.0
+theme_override_styles/normal = SubResource("StyleBoxEmpty_lmj7a")
 text = "SPECIAL"
 
-[node name="Run" type="Button" parent="VBoxContainer" unique_id=1278193742]
-layout_mode = 2
+[node name="RunLabel" type="Label" parent="OptionHolder" unique_id=306080140]
+layout_mode = 0
+offset_right = 70.0
+offset_bottom = 23.0
+theme_override_styles/normal = SubResource("StyleBoxEmpty_ejhj4")
 text = "RUN"
-
-[connection signal="pressed" from="VBoxContainer/Attack" to="." method="_on_attack_pressed"]
-[connection signal="pressed" from="VBoxContainer/Run" to="." method="_on_run_pressed"]

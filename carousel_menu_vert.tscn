@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://b8on1h7nes5h4"]
+
+[ext_resource type="Script" uid="uid://bwc2axp5eah4c" path="res://carousel_menu_vert.gd" id="1_ojcat"]
+
+[node name="carousel_menu_vert" type="Node2D" unique_id=770206091]
+script = ExtResource("1_ojcat")

@@ -1,12 +1,7 @@
 [gd_scene format=3 uid="uid://dgjar6b8g0n50"]
 
 [ext_resource type="Script" uid="uid://d4euuubm201l8" path="res://Combat/combat_menu.gd" id="1_2bcnp"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_2bcnp"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_lmj7a"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ejhj4"]
+[ext_resource type="Script" uid="uid://bwc2axp5eah4c" path="res://carousel_menu_vert.gd" id="2_lmj7a"]
 
 [node name="CombatMenu" type="Control" unique_id=953059002]
 layout_mode = 3
@@ -17,30 +12,52 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_2bcnp")
 
-[node name="OptionHolder" type="Control" parent="." unique_id=1511333642]
+[node name="CarouselContainer" type="Node2D" parent="." unique_id=890633860 node_paths=PackedStringArray("position_offset_node")]
+position = Vector2(12, 52)
+script = ExtResource("2_lmj7a")
+wraparound_height = 28.6
+opacity_strength = 0.25
+selected_index = 1
+position_offset_node = NodePath("OptionHolder")
+metadata/_custom_type_script = "uid://bwc2axp5eah4c"
+
+[node name="OptionHolder" type="Control" parent="CarouselContainer" unique_id=1511333642]
+layout_mode = 3
 anchors_preset = 0
-offset_left = 300.0
-offset_top = 300.0
-offset_right = 340.0
-offset_bottom = 339.99982
+offset_left = 185.0
+offset_top = -54.499996
+offset_right = 225.00006
+offset_bottom = -14.500195
 
-[node name="AttackLabel" type="Label" parent="OptionHolder" unique_id=439881438]
+[node name="AttackLabel" type="Panel" parent="CarouselContainer/OptionHolder" unique_id=510008115]
+modulate = Color(1, 1, 1, 0.75)
+z_index = -1
 layout_mode = 0
-offset_right = 70.0
-offset_bottom = 23.0
-theme_override_styles/normal = SubResource("StyleBoxEmpty_2bcnp")
-text = "ATTACK"
+offset_left = -35.0
+offset_right = 35.0
+offset_bottom = 23.000008
+scale = Vector2(0.75, 0.75)
+pivot_offset = Vector2(35, 11.500004)
+mouse_filter = 2
 
-[node name="SkillLabel" type="Label" parent="OptionHolder" unique_id=1794168313]
+[node name="SkillLabel" type="Panel" parent="CarouselContainer/OptionHolder" unique_id=749832068]
+z_index = 1
 layout_mode = 0
-offset_right = 70.0
-offset_bottom = 23.0
-theme_override_styles/normal = SubResource("StyleBoxEmpty_lmj7a")
-text = "SPECIAL"
+offset_left = -35.0
+offset_top = 43.000008
+offset_right = 35.0
+offset_bottom = 66.00001
+pivot_offset = Vector2(35, 11.5)
+focus_mode = 2
 
-[node name="RunLabel" type="Label" parent="OptionHolder" unique_id=306080140]
+[node name="RunLabel" type="Panel" parent="CarouselContainer/OptionHolder" unique_id=882877489]
+modulate = Color(1, 1, 1, 0.75)
+z_index = -1
 layout_mode = 0
-offset_right = 70.0
-offset_bottom = 23.0
-theme_override_styles/normal = SubResource("StyleBoxEmpty_ejhj4")
-text = "RUN"
+offset_left = -35.0
+offset_top = 86.00001
+offset_right = 35.0
+offset_bottom = 109.00001
+scale = Vector2(0.75, 0.75)
+pivot_offset = Vector2(35, 11.5)
+mouse_filter = 2

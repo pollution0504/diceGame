@@ -1,0 +1,16 @@
+[gd_scene format=3 uid="uid://bstgrgk75n7x2"]
+
+[ext_resource type="Script" uid="uid://dhbmrrjsar7w2" path="res://carousel_menu.gd" id="1_gm3fo"]
+
+[node name="CarouselMenu" type="Node2D" unique_id=1515439509]
+script = ExtResource("1_gm3fo")
+spacing = null
+wraparound_enabled = null
+wraparound_radius = null
+wraparound_height = null
+opacity_strength = null
+scale_strength = null
+scale_min = null
+smoothing_speed = null
+selected_index = null
+follow_button_focus = null

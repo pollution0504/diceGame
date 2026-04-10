@@ -5,27 +5,38 @@ class_name CombatMenu
 
 signal attack_pressed(BattleEntity)
 signal skill_pressed(BattleEntity)
+signal roll_pressed(BattleEntity)
+signal item_pressed(BattleEntity)
 signal run_pressed(BattleEntity)
 
-@onready var option_holder := $OptionHolder
-@onready var labels := [
-	$OptionHolder/AttackLabel,
-	$OptionHolder/SkillLabel,
-	$OptionHolder/RunLabel
+## Combat Box
+@onready var carousel_container = $CarouselContainer
+@onready var option_holder := $CarouselContainer/OptionHolder
+@onready var option_icons := [
+	$CarouselContainer/OptionHolder/AttackIcon,
+	$CarouselContainer/OptionHolder/SkillIcon,
+	$CarouselContainer/OptionHolder/RollIcon,
+	$CarouselContainer/OptionHolder/ItemIcon,
+	$CarouselContainer/OptionHolder/RunIcon,
 ]
 
-var options := ["Attack", "Skill", "Run"]
+var options := ["Attack", "Skill", "Roll", "Item", "Run"]
 var selected_option := 0
 # is the menu showing
 var is_active := false
 
+# Layout -> Transform -> Size
 func _ready() -> void:
+	for icon in option_icons:
+		icon.custom_minimum_size = Vector2(96, 96)
+		icon.size = Vector2(96, 96)
 	hide()
 
 # i figured out how to do the subtext function thingy
 ## Opens the Combat Menu
 func open():
 	selected_option = 0
+	carousel_container.selected_index = 0
 	is_active = true
 	show()
 
@@ -41,11 +52,13 @@ func _unhandled_input(event):
 	if event.is_action_pressed("down"):
 		selected_option = (selected_option + 1) % options.size()
 		print(options[selected_option])
+		carousel_container.selected_index = selected_option
 		# no clue what this does lowkey
 		get_viewport().set_input_as_handled()
 
 	elif event.is_action_pressed("up"):
 		selected_option = (selected_option - 1 + options.size()) % options.size()
+		carousel_container.selected_index = selected_option
 		print(options[selected_option])
 		get_viewport().set_input_as_handled()
 
@@ -54,14 +67,18 @@ func _unhandled_input(event):
 		get_viewport().set_input_as_handled()
 
 func confirm_selection():
-	# lowkey fire
 	match options[selected_option]:
 		"Attack":
 			attack_pressed.emit(entity)
 		"Skill":
 			skill_pressed.emit(entity)
+		"Roll":
+			roll_pressed.emit(entity)
+		"Item":
+			item_pressed.emit(entity)
 		"Run":
 			run_pressed.emit(entity)
+
 
 #func update_visuals():
 	#for i in range(labels.size()):

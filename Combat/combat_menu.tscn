@@ -2,6 +2,11 @@
 
 [ext_resource type="Script" uid="uid://d4euuubm201l8" path="res://Combat/combat_menu.gd" id="1_2bcnp"]
 [ext_resource type="Script" uid="uid://bwc2axp5eah4c" path="res://carousel_menu_vert.gd" id="2_lmj7a"]
+[ext_resource type="Texture2D" uid="uid://1fwao1occ6sh" path="res://Sprites/attack.png" id="3_el3dd"]
+[ext_resource type="Texture2D" uid="uid://kddxixjcupd8" path="res://Sprites/skill.png" id="4_h4nhm"]
+[ext_resource type="Texture2D" uid="uid://k2l5f6fupr6i" path="res://Sprites/run.png" id="5_bbsmr"]
+[ext_resource type="Texture2D" uid="uid://r35ybnml5u2y" path="res://Sprites/roll.png" id="5_i6hxe"]
+[ext_resource type="Texture2D" uid="uid://eyykkws6cyym" path="res://Sprites/item.png" id="6_ki1hw"]
 
 [node name="CombatMenu" type="Control" unique_id=953059002]
 layout_mode = 3
@@ -13,51 +18,101 @@ grow_vertical = 2
 script = ExtResource("1_2bcnp")
 
 [node name="CarouselContainer" type="Node2D" parent="." unique_id=890633860 node_paths=PackedStringArray("position_offset_node")]
-position = Vector2(12, 52)
 script = ExtResource("2_lmj7a")
-wraparound_height = 28.6
-opacity_strength = 0.25
-selected_index = 1
+wraparound_enabled = true
+wraparound_radius = 80.0
+wraparound_height = -35.0
+opacity_strength = 0.105
+scale_strength = 0.218
+scale_min = 0.13
+selected_index = 4
 position_offset_node = NodePath("OptionHolder")
 metadata/_custom_type_script = "uid://bwc2axp5eah4c"
 
 [node name="OptionHolder" type="Control" parent="CarouselContainer" unique_id=1511333642]
 layout_mode = 3
 anchors_preset = 0
-offset_left = 185.0
-offset_top = -54.499996
-offset_right = 225.00006
-offset_bottom = -14.500195
+offset_left = 1.0
+offset_right = 370.0
+offset_bottom = 326.9997
 
-[node name="AttackLabel" type="Panel" parent="CarouselContainer/OptionHolder" unique_id=510008115]
-modulate = Color(1, 1, 1, 0.75)
-z_index = -1
+[node name="AttackIcon" type="TextureRect" parent="CarouselContainer/OptionHolder" unique_id=529652122]
+modulate = Color(1, 1, 1, 0.895)
+z_index = -4
+custom_minimum_size = Vector2(64, 64)
 layout_mode = 0
-offset_left = -35.0
-offset_right = 35.0
-offset_bottom = 23.000008
-scale = Vector2(0.75, 0.75)
-pivot_offset = Vector2(35, 11.500004)
+offset_left = -103.81559
+offset_top = -51.915474
+offset_right = 152.18442
+offset_bottom = 204.08453
+scale = Vector2(0.78199995, 0.78199995)
+pivot_offset = Vector2(128, 128)
 mouse_filter = 2
+texture = ExtResource("3_el3dd")
+expand_mode = 3
+stretch_mode = 5
 
-[node name="SkillLabel" type="Panel" parent="CarouselContainer/OptionHolder" unique_id=749832068]
+[node name="SkillIcon" type="TextureRect" parent="CarouselContainer/OptionHolder" unique_id=827050596]
+modulate = Color(1, 1, 1, 0.79)
+z_index = -3
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 0
+offset_left = -64.68441
+offset_top = -80.97719
+offset_right = 191.31558
+offset_bottom = 175.02281
+scale = Vector2(0.56400007, 0.56400007)
+pivot_offset = Vector2(128, 128)
+mouse_filter = 2
+texture = ExtResource("4_h4nhm")
+expand_mode = 3
+stretch_mode = 5
+
+[node name="RollIcon" type="TextureRect" parent="CarouselContainer/OptionHolder" unique_id=842843468]
+modulate = Color(1, 1, 1, 0.79)
+z_index = -2
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 0
+offset_left = -64.68441
+offset_top = -175.02281
+offset_right = 191.31558
+offset_bottom = 80.97719
+scale = Vector2(0.56400007, 0.56400007)
+pivot_offset = Vector2(128, 128)
+mouse_filter = 2
+texture = ExtResource("5_i6hxe")
+expand_mode = 3
+stretch_mode = 5
+
+[node name="ItemIcon" type="TextureRect" parent="CarouselContainer/OptionHolder" unique_id=1376231407]
+modulate = Color(1, 1, 1, 0.89500004)
+z_index = -1
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 0
+offset_left = -103.815605
+offset_top = -204.0845
+offset_right = 152.18439
+offset_bottom = 51.915497
+scale = Vector2(0.78200006, 0.78200006)
+pivot_offset = Vector2(128, 128)
+mouse_filter = 2
+texture = ExtResource("6_ki1hw")
+expand_mode = 3
+stretch_mode = 5
+
+[node name="RunIcon" type="TextureRect" parent="CarouselContainer/OptionHolder" unique_id=1966655716]
+modulate = Color(1, 1, 1, 0.99999994)
 z_index = 1
+custom_minimum_size = Vector2(64, 64)
 layout_mode = 0
-offset_left = -35.0
-offset_top = 43.000008
-offset_right = 35.0
-offset_bottom = 66.00001
-pivot_offset = Vector2(35, 11.5)
+offset_left = -128.00005
+offset_top = -128.00005
+offset_right = 128.00008
+offset_bottom = 128.00008
+scale = Vector2(0.99999994, 0.99999994)
+pivot_offset = Vector2(128.00006, 128.00006)
 focus_mode = 2
-
-[node name="RunLabel" type="Panel" parent="CarouselContainer/OptionHolder" unique_id=882877489]
-modulate = Color(1, 1, 1, 0.75)
-z_index = -1
-layout_mode = 0
-offset_left = -35.0
-offset_top = 86.00001
-offset_right = 35.0
-offset_bottom = 109.00001
-scale = Vector2(0.75, 0.75)
-pivot_offset = Vector2(35, 11.5)
-mouse_filter = 2
+mouse_filter = 0
+texture = ExtResource("5_bbsmr")
+expand_mode = 3
+stretch_mode = 5

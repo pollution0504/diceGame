@@ -13,6 +13,7 @@ const CURSOR = preload("res://Combat/cursor.tscn")
 var allies : Array[BattleAlly]
 var enemies : Array[BattleEnemy]
 
+const COMBAT_MENU_OFFSET := Vector3(150,0,0)
 
 const BELL_TIMER_DURATION := 3.0
 const ENEMY_TURN_DELAY := 1.0
@@ -43,6 +44,10 @@ func _ready():
 		enemy.PlayIntroAnimation()
 	for ally in allies:
 		ally.PlayIntroAnimation()
+		
+	# Problem 001
+	await get_tree().process_frame
+	await get_tree().create_timer(1.0).timeout
 	start_battle()
 
 func start_battle_music() -> void:
@@ -77,7 +82,7 @@ func instantiate_entities():
 		#hopefully this doesnt fuck up
 		ally.combat_menu = cm
 		cm.entity = ally
-		cm.hide()
+		cm.close()
 		ally.combat_menu.attack_pressed.connect(_on_attack_decision)
 		ally.combat_menu.run_pressed.connect(_on_run_decision)
 	# Connect using the callable syntax
@@ -116,8 +121,10 @@ func advance_turn():
 
 func ally_turn(actor: BattleAlly):
 	print(actor.name," ally turn")
-	actor.combat_menu.open()
-	# The menu will trigger _on_attack_decision via signal
+	var cam = get_viewport().get_camera_3d()
+	var screen_pos = cam.unproject_position(actor.global_position)
+	actor.combat_menu.position = screen_pos + Vector2(150, 0)
+	actor.combat_menu.open()	# The menu will trigger _on_attack_decision via signal
 
 func enemy_turn(actor: BattleEnemy):
 	print("enemy turn")
@@ -206,6 +213,9 @@ func _on_attack_decision(source_entity : BattleAlly):
 	
 	advance_turn()
 	
+
+
+
 func _on_run_decision(source_entity : BattleEntity):
 	source_entity.combat_menu.close()
 	for a in allies:

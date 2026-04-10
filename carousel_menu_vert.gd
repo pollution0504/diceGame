@@ -21,16 +21,17 @@ class_name CarouselContainerVert
 func _process(delta: float) -> void:
 	if !position_offset_node or position_offset_node.get_child_count() == 0:
 		return
-
 	selected_index = clamp(selected_index, 0, position_offset_node.get_child_count()-1)
-
 	for i in position_offset_node.get_children():
 		if wraparound_enabled:
-			var max_index_range = max(1, (position_offset_node.get_child_count() - 1) / 2.0)
-			var angle = clamp((i.get_index() - selected_index) / max_index_range, -1.0, 1.0) * PI
+			var count = position_offset_node.get_child_count()
+			var idx = i.get_index()
+			var rel = idx - selected_index
+			rel = fposmod(rel + count / 2.0, count) - count / 2.0
+			var angle = (rel / count) * TAU
 			var x = cos(angle) * wraparound_height
 			var y = sin(angle) * wraparound_radius
-			var target_pos = Vector2(x - wraparound_height, y) - i.size/2.0
+			var target_pos = Vector2(x - wraparound_height, y) - i.size / 2.0
 			i.position = lerp(i.position, target_pos, smoothing_speed * delta)
 		else:
 			var position_y = 0
@@ -39,13 +40,28 @@ func _process(delta: float) -> void:
 			i.position = Vector2(-i.size.x / 2.0, position_y)
 
 		i.pivot_offset = i.size/2.0
-		var target_scale = 1.0 - (scale_strength * abs(i.get_index()-selected_index))
-		target_scale = clamp(target_scale, scale_min, 1.0)
-		i.scale = lerp(i.scale, Vector2.ONE * target_scale, smoothing_speed*delta)
+		
+		# OLD CODE 
+		#var target_scale = 1.0 - (scale_strength * abs(i.get_index()-selected_index))
+		#target_scale = clamp(target_scale, scale_min, 1.0)
+		#i.scale = lerp(i.scale, Vector2.ONE * target_scale, smoothing_speed*delta)
+#
+		#var target_opacity = 1.0 - (opacity_strength * abs(i.get_index()-selected_index))
+		#target_opacity = clamp(target_opacity, 0.0, 1.0)
+		#i.modulate.a = lerp(i.modulate.a, target_opacity, smoothing_speed*delta)
+		
+		var dist = abs(i.get_index() - selected_index)
+		if wraparound_enabled:
+			var count = position_offset_node.get_child_count()
+			dist = abs(fposmod(i.get_index() - selected_index + count / 2.0, count) - count / 2.0)
 
-		var target_opacity = 1.0 - (opacity_strength * abs(i.get_index()-selected_index))
+		var target_scale = 1.0 - (scale_strength * dist)
+		target_scale = clamp(target_scale, scale_min, 1.0)
+		i.scale = lerp(i.scale, Vector2.ONE * target_scale, smoothing_speed * delta)
+
+		var target_opacity = 1.0 - (opacity_strength * dist)
 		target_opacity = clamp(target_opacity, 0.0, 1.0)
-		i.modulate.a = lerp(i.modulate.a, target_opacity, smoothing_speed*delta)
+		i.modulate.a = lerp(i.modulate.a, target_opacity, smoothing_speed * delta)
 
 		if i.get_index() == selected_index:
 			i.z_index = 1

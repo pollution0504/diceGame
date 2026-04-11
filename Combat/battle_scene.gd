@@ -9,10 +9,15 @@ const boxing_bell = preload("res://SFX/bell_sfx.mp3")
 const COMBAT_MENU = preload("res://Combat/combat_menu.tscn")
 const CURSOR = preload("res://Combat/cursor.tscn")
 
+const menu_back_sfx = preload("res://SFX/menu_back_sfx.wav")
+const menu_scroll_sfx = preload("res://SFX/menu_scroll_sfx.wav")
+const menu_select_sfx = preload("res://SFX/menu_select_sfx.wav")
+
 @export var battle_entities : Array[PackedScene]
 var allies : Array[BattleAlly]
 var enemies : Array[BattleEnemy]
 
+const COMBAT_MENU_OFFSET := Vector3(150,0,0)
 
 const BELL_TIMER_DURATION := 3.0
 const ENEMY_TURN_DELAY := 1.0
@@ -43,6 +48,10 @@ func _ready():
 		enemy.PlayIntroAnimation()
 	for ally in allies:
 		ally.PlayIntroAnimation()
+		
+	# Problem 001
+	await get_tree().process_frame
+	await get_tree().create_timer(1.0).timeout
 	start_battle()
 
 func start_battle_music() -> void:
@@ -61,9 +70,7 @@ func instantiate_entities():
 			allies.append(entity)
 		elif entity is BattleEnemy:
 			enemies.append(entity)
-		add_child(entity)
-		
-	
+		add_child(entity)	
 	var i = 1
 	for ally in allies:
 		#do positioning
@@ -79,7 +86,7 @@ func instantiate_entities():
 		#hopefully this doesnt fuck up
 		ally.combat_menu = cm
 		cm.entity = ally
-		cm.hide()
+		cm.close()
 		ally.combat_menu.attack_pressed.connect(_on_attack_decision)
 		ally.combat_menu.run_pressed.connect(_on_run_decision)
 	# Connect using the callable syntax
@@ -88,8 +95,6 @@ func instantiate_entities():
 		e.position += -1 * i * entity_spacing + Vector3(0,0.5,0)
 		i += 1
 		e.on_death.connect(enemy_death)
-
-	
 
 func start_battle():
 	current_turn = TURNS.ALLIES
@@ -120,8 +125,10 @@ func advance_turn():
 
 func ally_turn(actor: BattleAlly):
 	print(actor.name," ally turn")
-	actor.combat_menu.show()
-	# The menu will trigger _on_attack_decision via signal
+	var cam = get_viewport().get_camera_3d()
+	var screen_pos = cam.unproject_position(actor.global_position)
+	actor.combat_menu.position = screen_pos + Vector2(150, 0)
+	actor.combat_menu.open()	# The menu will trigger _on_attack_decision via signal
 
 func enemy_turn(actor: BattleEnemy):
 	print("enemy turn")
@@ -135,16 +142,6 @@ func enemy_turn(actor: BattleEnemy):
 func enemy_death(actor: BattleEnemy):
 	enemies.remove_at(enemies.find(actor))
 	print("DEATH")
-
-func _on_attack_decision(source_entity : BattleAlly):
-	source_entity.combat_menu.hide()
-	var target_idx = await get_target_selection()
-	
-	if target_idx != -1:
-		var target = enemies[target_idx]
-		await source_entity.Attack(target)
-	
-	advance_turn()
 
 func get_target_selection() -> int:
 	is_targeting = true
@@ -164,16 +161,22 @@ func _input(event: InputEvent) -> void:
 		
 	if Input.is_action_just_pressed("right"):
 		selection_index = (selection_index + 1) % enemies.size()
+		AudioManager.play_sound(menu_scroll_sfx)
 		_update_highlights()
 	elif Input.is_action_just_pressed("left"):
+		AudioManager.play_sound(menu_scroll_sfx)
 		selection_index = (selection_index - 1 + enemies.size()) % enemies.size()
 		_update_highlights()
 	elif Input.is_action_just_pressed("ui_accept"): # "Enter" or "Space"
+		AudioManager.play_sound(menu_select_sfx)
 		target_selected.emit(selection_index)
 
 func _update_highlights():
 	_highlight_enemy(selection_index)
 
+## [code]_highlight_enemy(index)[/code] Moves the selection cursor to the enemy at index. 
+## If the cursor is already visible, it smoothly tweens to the new position; 
+## otherwise it snaps directly and shows it. Does nothing if the target is dead.
 func _highlight_enemy(index):
 	var target = enemies[index]
 	if target.is_alive():
@@ -207,8 +210,21 @@ func check_battle_over() -> bool:
 		return true
 	return false
 	
+func _on_attack_decision(source_entity : BattleAlly):
+	source_entity.combat_menu.close()
+	var target_idx = await get_target_selection()
+	
+	if target_idx != -1:
+		var target = enemies[target_idx]
+		await source_entity.Attack(target)
+	
+	advance_turn()
+	
+	
 func _on_run_decision(source_entity : BattleEntity):
-	await source_entity.PlayRunAnimation()
+	source_entity.combat_menu.close()
+	for a in allies:
+		await a.PlayRunAnimation()
 	end_battle()
 	
 func end_battle():

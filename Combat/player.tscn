@@ -24,16 +24,15 @@ animations = [{
 "speed": 5.0
 }]
 
+[sub_resource type="ViewportTexture" id="ViewportTexture_cbytb"]
+viewport_path = NodePath("HP/SubViewport")
+
 [node name="Player" type="Node3D" unique_id=472278561 node_paths=PackedStringArray("health_bar", "visual_component")]
 transform = Transform3D(0.645, 0, 0, 0, 0.645, 0, 0, 0, 0.645, 0, 0, 0)
 script = ExtResource("2_2y06h")
-health_bar = NodePath("ProgressBar")
+health_bar = NodePath("HP/SubViewport/ProgressBar")
 stats = SubResource("Resource_hrir6")
 visual_component = NodePath("AnimatedSprite3D")
-
-[node name="ProgressBar" type="ProgressBar" parent="." unique_id=166768163]
-offset_right = 282.0
-offset_bottom = 27.0
 
 [node name="AnimatedSprite3D" type="AnimatedSprite3D" parent="." unique_id=1262368255]
 billboard = 2
@@ -42,3 +41,17 @@ autoplay = "default"
 
 [node name="VoiceLine" type="AudioStreamPlayer" parent="." unique_id=1063749742]
 volume_db = -10.85
+
+[node name="HP" type="Sprite3D" parent="." unique_id=1130734695]
+transform = Transform3D(0.9999997, 0, 0, 0, 0.9999997, 0, 0, 0, 0.9999997, 0, 0.8741309, 0)
+billboard = 2
+texture = SubResource("ViewportTexture_cbytb")
+
+[node name="SubViewport" type="SubViewport" parent="HP" unique_id=611898734]
+transparent_bg = true
+size = Vector2i(286, 83)
+
+[node name="ProgressBar" type="ProgressBar" parent="HP/SubViewport" unique_id=166768163]
+offset_right = 282.0
+offset_bottom = 27.0
+value = 2.9

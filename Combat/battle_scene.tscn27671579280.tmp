@@ -1,0 +1,47 @@
+[gd_scene format=3 uid="uid://cc1ohb76gpjns"]
+
+[ext_resource type="Script" uid="uid://7rgs06v8khnv" path="res://Combat/battle_scene.gd" id="1_r0pvh"]
+[ext_resource type="PackedScene" uid="uid://bpeca8mncb14x" path="res://Combat/player.tscn" id="2_hrir6"]
+[ext_resource type="PackedScene" uid="uid://skdn2v5lbciw" path="res://Combat/enemy_minion.tscn" id="3_omqys"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_q5oti"]
+sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
+ground_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
+
+[sub_resource type="Sky" id="Sky_iw0lx"]
+sky_material = SubResource("ProceduralSkyMaterial_q5oti")
+
+[sub_resource type="Environment" id="Environment_omqys"]
+background_mode = 2
+sky = SubResource("Sky_iw0lx")
+tonemap_mode = 2
+glow_enabled = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_iw0lx"]
+albedo_color = Color(0.106479414, 0.20812607, 0.11392409, 1)
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_omqys"]
+material = SubResource("StandardMaterial3D_iw0lx")
+size = Vector2(40, 40)
+
+[node name="BattleScene" type="Node3D" unique_id=511297719]
+script = ExtResource("1_r0pvh")
+battle_entities = Array[PackedScene]([ExtResource("2_hrir6"), ExtResource("2_hrir6"), ExtResource("3_omqys"), ExtResource("3_omqys")])
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=1464599185]
+transform = Transform3D(-0.8660254, -0.43301278, 0.25, 0, 0.49999997, 0.86602545, -0.50000006, 0.75, -0.43301266, 0, 0, 0)
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1281465447]
+environment = SubResource("Environment_omqys")
+
+[node name="Camera3D" type="Camera3D" parent="." unique_id=1749398744]
+transform = Transform3D(1, 0, 0, 0, 0.99258864, 0.12152287, 0, -0.12152287, 0.99258864, -0.006349921, 2.096791, 12.35546)
+fov = 20.0
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=94951689]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.013476372, -0.010877609, 0.011166096)
+mesh = SubResource("PlaneMesh_omqys")
+
+[node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="." unique_id=1084181741]
+volume_db = -15.509
+max_polyphony = 41

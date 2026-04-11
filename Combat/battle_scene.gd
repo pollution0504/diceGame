@@ -9,6 +9,10 @@ const boxing_bell = preload("res://SFX/bell_sfx.mp3")
 const COMBAT_MENU = preload("res://Combat/combat_menu.tscn")
 const CURSOR = preload("res://Combat/cursor.tscn")
 
+const menu_back_sfx = preload("res://SFX/menu_back_sfx.wav")
+const menu_scroll_sfx = preload("res://SFX/menu_scroll_sfx.wav")
+const menu_select_sfx = preload("res://SFX/menu_select_sfx.wav")
+
 @export var battle_entities : Array[PackedScene]
 var allies : Array[BattleAlly]
 var enemies : Array[BattleEnemy]
@@ -157,11 +161,14 @@ func _input(event: InputEvent) -> void:
 		
 	if Input.is_action_just_pressed("right"):
 		selection_index = (selection_index + 1) % enemies.size()
+		AudioManager.play_sound(menu_scroll_sfx)
 		_update_highlights()
 	elif Input.is_action_just_pressed("left"):
+		AudioManager.play_sound(menu_scroll_sfx)
 		selection_index = (selection_index - 1 + enemies.size()) % enemies.size()
 		_update_highlights()
 	elif Input.is_action_just_pressed("ui_accept"): # "Enter" or "Space"
+		AudioManager.play_sound(menu_select_sfx)
 		target_selected.emit(selection_index)
 
 func _update_highlights():
@@ -213,9 +220,7 @@ func _on_attack_decision(source_entity : BattleAlly):
 	
 	advance_turn()
 	
-
-
-
+	
 func _on_run_decision(source_entity : BattleEntity):
 	source_entity.combat_menu.close()
 	for a in allies:

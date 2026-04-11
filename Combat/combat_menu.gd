@@ -9,7 +9,7 @@ signal roll_pressed(BattleEntity)
 signal item_pressed(BattleEntity)
 signal run_pressed(BattleEntity)
 
-## Combat Box
+# Combat Box
 @onready var carousel_container = $CarouselContainer
 @onready var option_holder := $CarouselContainer/OptionHolder
 @onready var option_icons := [
@@ -24,6 +24,10 @@ var options := ["Attack", "Skill", "Roll", "Item", "Run"]
 var selected_option := 0
 # is the menu showing
 var is_active := false
+
+const menu_back_sfx = preload("res://SFX/menu_back_sfx.wav")
+const menu_scroll_sfx = preload("res://SFX/menu_scroll_sfx.wav")
+const menu_select_sfx = preload("res://SFX/menu_select_sfx.wav")
 
 # Layout -> Transform -> Size
 func _ready() -> void:
@@ -52,6 +56,7 @@ func _unhandled_input(event):
 	if event.is_action_pressed("down"):
 		selected_option = (selected_option + 1) % options.size()
 		print(options[selected_option])
+		AudioManager.play_sound(menu_scroll_sfx)
 		carousel_container.selected_index = selected_option
 		# no clue what this does lowkey
 		get_viewport().set_input_as_handled()
@@ -60,9 +65,11 @@ func _unhandled_input(event):
 		selected_option = (selected_option - 1 + options.size()) % options.size()
 		carousel_container.selected_index = selected_option
 		print(options[selected_option])
+		AudioManager.play_sound(menu_scroll_sfx)
 		get_viewport().set_input_as_handled()
 
 	elif event.is_action_pressed("ui_accept"):
+		AudioManager.play_sound(menu_select_sfx)
 		confirm_selection()
 		get_viewport().set_input_as_handled()
 

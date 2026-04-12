@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://dgjar6b8g0n50"]
 
 [ext_resource type="Script" uid="uid://d4euuubm201l8" path="res://Combat/combat_menu.gd" id="1_2bcnp"]
-[ext_resource type="Script" uid="uid://bwc2axp5eah4c" path="res://carousel_menu_vert.gd" id="2_lmj7a"]
+[ext_resource type="Script" uid="uid://bwc2axp5eah4c" path="res://Combat/carousel_menu_vert.gd" id="2_lmj7a"]
 [ext_resource type="Texture2D" uid="uid://1fwao1occ6sh" path="res://Sprites/attack.png" id="3_el3dd"]
 [ext_resource type="Texture2D" uid="uid://kddxixjcupd8" path="res://Sprites/skill.png" id="4_h4nhm"]
 [ext_resource type="Texture2D" uid="uid://k2l5f6fupr6i" path="res://Sprites/run.png" id="5_bbsmr"]

@@ -49,6 +49,13 @@ func close():
 	is_active = false
 	hide()
 
+func update_roll_button(has_active_roll: bool):
+	var roll_icon = option_icons[2]  # RollIcon is index 2
+	if has_active_roll:
+		roll_icon.modulate = Color(0.3, 0.3, 0.3)  # grey out
+	else:
+		roll_icon.modulate = Color(1, 1, 1)  # normal
+
 # Goes Up and Down on the Menu
 func _unhandled_input(event):
 	if not is_active:
@@ -69,9 +76,10 @@ func _unhandled_input(event):
 		get_viewport().set_input_as_handled()
 
 	elif event.is_action_pressed("ui_accept"):
+		get_viewport().set_input_as_handled()
 		AudioManager.play_sound(menu_select_sfx)
 		confirm_selection()
-		get_viewport().set_input_as_handled()
+		
 
 func confirm_selection():
 	match options[selected_option]:
@@ -80,7 +88,10 @@ func confirm_selection():
 		"Skill":
 			skill_pressed.emit(entity)
 		"Roll":
-			roll_pressed.emit(entity)
+			if entity.current_dice_roll == -1:
+				roll_pressed.emit(entity)
+			else:
+				AudioManager.play_sound(menu_back_sfx)
 		"Item":
 			item_pressed.emit(entity)
 		"Run":

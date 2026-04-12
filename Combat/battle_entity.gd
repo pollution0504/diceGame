@@ -5,43 +5,66 @@ class_name BattleEntity
 @export var visual_component : Node3D
 
 var entity_name: String = ""
- 
+
+var current_dice_roll: int = -1
+var dice_roll_turns_remaining: int = 0
+const DICE_ROLL_DURATION: int = 3  # lasts x turns after rolling
+
+var status_effects: StatusEffectManager = StatusEffectManager.new()
+
 var current_mp: int = 40
 var current_health := 0
 
 var active := false
+var can_attack := true
 
 signal on_death(BattleEntity)
 #var items := Array[Consumable]
 
 # Called when the node enters the scene tree for the first time.
-func RollDice() -> int:
-	# look for sides, if not, return 20
-	var sides = stats.dice.get("sides", 20)
-	var bonus = stats.dice.get("bonus", 0)
-	return randi() % sides + 1 + bonus
+func RollDice():
+	current_dice_roll = stats.dice.roll()
 
 
-func Attack(target_entity : BattleEntity):
-	var damage_given : int = target_entity.TakeDamage(stats.attack)
-	print("I hit enemy ", target_entity, " for ", damage_given)
-
+func Attack(target_entity: BattleEntity):
+	if stats.dice == null or current_dice_roll == -1:
+		target_entity.TakeDamage(stats.attack)
+		return
 	
-func TakeDamage(damage : int) -> int:
-	if randi_range(0,100) < stats.agility:
-		print("dodge")
+	if not stats.dice.can_attack(current_dice_roll):
+		return
+	
+	# Deal damage using dice multiplier
+	var damage = stats.dice.get_damage_multiplier(current_dice_roll, stats.attack)
+	var damage_given = target_entity.TakeDamage(damage)
+	print(entity_name, " dealt ", damage_given, " damage")
+	
+	# Apply enemy effects (bleed, poison, etc)
+	var effects: Array[Effect] = stats.dice.get_effects(current_dice_roll)
+	for effect in effects:
+		if effect.target == Effect.Target.ENEMY:
+			effect.apply(self, target_entity)
+
+func Heal(amount: int):
+	current_health = min(current_health + amount, stats.max_health)
+
+
+func TakeDamage(damage: int) -> int:
+	if randi_range(0, 100) < stats.agility:
+		print(entity_name, " dodged")
 		return 0
 	
-	# check for buff. Apply buffs
 	var real_defense = stats.defense
-	
-	var damage_taken = max(damage - real_defense,0)
+	var damage_taken = max(damage - real_defense, 0)
 	current_health -= damage_taken
+	
 	if !is_alive():
 		die()
-	print("current health: ", current_health)
+	
+	print(entity_name, " took ", damage_taken, " damage (", current_health, "/", stats.max_health, " HP)")
 	PlayHitImpactTween()
 	return damage_taken
+
 	
 
 func is_alive() -> bool:
@@ -49,7 +72,6 @@ func is_alive() -> bool:
 
 func _ready():
 	current_health = stats.max_health
-	print("Yo ", current_health)
 	
 const HIT_FLASH_DURATION := 0.1
 const HIT_FADE_DURATION := 0.2

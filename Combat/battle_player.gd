@@ -12,18 +12,15 @@ const KICK = preload("res://SFX/kick.sfx.wav")
 
 func _ready():
 	super()
-	print("max health: ", stats.max_health)
-	print("current health: ", current_health)
 	health_bar.max_value = stats.max_health
 	health_bar.value = current_health
-	print("bar percent-ish value: ", health_bar.value, "/", health_bar.max_value)
 
-func TakeDamage(damage : int) -> int:
-	var dmg = super(damage)
-	health_bar.value = current_health
+func TakeDamage(damage: int) -> int:
 	voice_line.stream = KICK
 	voice_line.play()
-	return dmg
+	var result = super.TakeDamage(damage)
+	health_bar.value = current_health      
+	return result
 
 const INTRO_OFFSET := Vector3(-8, 0, 0)
 const INTRO_DURATION := 0.8
@@ -37,9 +34,15 @@ const HOP_BACK_DURATION := 0.6
 const HOP_BACK_HEIGHT := 1.0
 const SWORD_SLICE_START_TIME := 0.17
 
-func Attack(target_entity : BattleEntity):
+func Attack(target_entity: BattleEntity):
+	if stats.dice != null and current_dice_roll != -1 and not stats.dice.can_attack(current_dice_roll):
+		return
 	await PlayAttackAnimation(target_entity)
-	
+
+func Heal(amount: int):
+	super.Heal(amount)
+	health_bar.value = current_health
+
 func PlayIntroAnimation():
 	var original_position = global_position
 	global_position = original_position + INTRO_OFFSET
@@ -50,8 +53,6 @@ func PlayIntroAnimation():
 	voice_line.stream = PREPARE_YOURSELF
 	voice_line.play()
 	await tween.finished
-	
-	
 	
 func PlayAttackAnimation(target_entity : BattleEntity):
 	var original_pos = global_position
@@ -86,7 +87,15 @@ func PlayAttackAnimation(target_entity : BattleEntity):
 	tween.tween_callback(func(): 
 		voice_line.stream = SWORD_SLICE
 		voice_line.play(SWORD_SLICE_START_TIME)
-		super.Attack(target_entity)
+		print("tween callback fired!")
+		
+		# THIS IS ATTACK
+		# IF ENTITY HAS NO DICE OR HASN'T ROLLED YET
+		if stats.dice == null or current_dice_roll == -1:
+			target_entity.TakeDamage(stats.attack)
+		else:
+			var damage = stats.dice.get_damage_multiplier(current_dice_roll, stats.attack)
+			target_entity.TakeDamage(damage)
 	)
 
 	# 4. PARABOLIC HOP BACK

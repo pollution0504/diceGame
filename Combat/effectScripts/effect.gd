@@ -1,8 +1,8 @@
 extends Resource
 class_name Effect
 
-enum Target { SELF, ENEMY }
-var target: Target = Target.ENEMY
+enum Target { SELF, ENEMY, ALL_ALLIES, ALL_ENEMIES }
+@export var target_type: Target = Target.ENEMY
 
-func apply(attacker: BattleEntity, defender: BattleEntity):
+func apply(source: BattleEntity, target: BattleEntity):
 	pass

@@ -2,8 +2,8 @@ extends Effect
 class_name AttackEffect
 
 func _init():
-	target = Effect.Target.ENEMY
+	target_type = Effect.Target.ENEMY
 
-func apply(attacker: BattleEntity, defender: BattleEntity):
-	var damage = attacker.stats.dice.get_damage_multiplier(attacker.current_dice_roll, attacker.stats.attack)
-	defender.TakeDamage(damage)
+func apply(source: BattleEntity, target: BattleEntity):
+	var damage = source.stats.dice.get_damage_multiplier(source.current_dice_roll, source.stats.attack)
+	target.TakeDamage(damage)

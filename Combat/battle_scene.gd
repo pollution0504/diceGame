@@ -120,42 +120,20 @@ func advance_turn():
 	
 	var current_actor = turn_queue.pop_front()
 	
+	# Process status effects at the start of the turn
+	current_actor.process_turn()
+	
 	if not current_actor.is_alive():
 		advance_turn()
 		return
 	
-	if current_actor is BattleEnemy:
-		await enemy_turn(current_actor)
-	else:
-		await ally_turn(current_actor)
-
-func ally_turn(actor: BattleAlly):
-	# Tick down roll duration
-	if actor.dice_roll_turns_remaining > 0:
-		actor.dice_roll_turns_remaining -= 1
-		print("Roll expires in ", actor.dice_roll_turns_remaining, " turns")
-		if actor.dice_roll_turns_remaining == 0:
-			actor.current_dice_roll = -1
-			actor.combat_menu.update_roll_button(false) # Ungrey out the Dice
-			print("Roll expired!")
+	if current_actor.skip_turn:
+		print(current_actor.entity_name, " skips turn!")
+		advance_turn()
+		return
 	
-	print(actor.name," ally turn")
-	print(actor.current_health)
-	var cam = get_viewport().get_camera_3d()
-	var screen_pos = cam.unproject_position(actor.global_position)
-	actor.combat_menu.position = screen_pos + Vector2(150, 0)
-	actor.combat_menu.open()	# The menu will trigger _on_attack_decision via signal
-	
-	await actor.turn_ended
-	advance_turn()
-
-func enemy_turn(actor: BattleEnemy):
-	print("enemy turn")
-	await get_tree().create_timer(ENEMY_TURN_DELAY).timeout # Small pause for "thinking"
-	var target = actor.choose_target([allies.pick_random()])
-	if target:
-		await actor.Attack(target)
-		print("ouch")
+	# The actor now knows how to take its own turn
+	await current_actor.take_turn(allies, enemies)
 	advance_turn()
 
 func enemy_death(actor: BattleEnemy):
@@ -236,7 +214,7 @@ func _on_attack_decision(source_entity : BattleAlly):
 	
 	if target_idx != -1:
 		var target = enemies[target_idx]
-		await source_entity.Attack(target)
+		await source_entity.Attack(target, allies, enemies)
 	
 	source_entity.turn_ended.emit()
 
@@ -248,16 +226,7 @@ func _on_roll_decision(source_entity: BattleAlly):
 	source_entity.combat_menu.close()
 	
 	AudioManager.play_sound(dice_roll_sfx)
-	source_entity.RollDice()
-	print(source_entity.current_dice_roll)
-	source_entity.dice_roll_turns_remaining = BattleEntity.DICE_ROLL_DURATION
-	
-	# Apply self effects immediately on roll
-	if source_entity.stats.dice != null:
-		var effects: Array[Effect] = source_entity.stats.dice.get_effects(source_entity.current_dice_roll)
-		for effect in effects:
-			if effect.target == Effect.Target.SELF:
-				effect.apply(source_entity, source_entity)
+	source_entity.RollDice(allies, enemies)
 	
 	await get_tree().create_timer(DICE_TIMER_DURATION).timeout
 	

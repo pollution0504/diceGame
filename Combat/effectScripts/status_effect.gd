@@ -2,13 +2,17 @@
 extends Effect
 class_name StatusEffect
 
-var effect_name: String = ""
+@export var status_to_apply: Status
 var stacks: int = 1
 
 func _init():
-	target = Effect.Target.ENEMY
+	target_type = Effect.Target.ENEMY
 
-func apply(attacker: BattleEntity, defender: BattleEntity):
-	# Just registers with the manager, doesn't do damage itself
-	defender.status_effects.apply_effect(effect_name, stacks)
-	print("Applied ", effect_name, " x", stacks)
+func apply(source: BattleEntity, target: BattleEntity):
+	if status_to_apply:
+		# Important: We duplicate the resource so each instance 
+		# tracks its own stacks and duration independently.
+		var status_instance = status_to_apply.duplicate()
+		status_instance.stacks = stacks
+		target.apply_status(status_instance)
+		print("Applied ", status_instance.status_name, " x", stacks, " to ", target.entity_name)

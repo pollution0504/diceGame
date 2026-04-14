@@ -2,12 +2,11 @@
 
 [ext_resource type="Texture2D" uid="uid://q1dd1vb8jr1f" path="res://icon.svg" id="1_cbytb"]
 [ext_resource type="Script" uid="uid://cwsvb470r8u3q" path="res://Combat/battle_player.gd" id="2_2y06h"]
-[ext_resource type="Script" uid="uid://bejcl2soe50v2" path="res://Combat/diceScripts/wooden_die.gd" id="2_nyq6c"]
+[ext_resource type="Script" uid="uid://bq2k64smf7r0o" path="res://Combat/diceScripts/infused_die.gd" id="2_nyq6c"]
 [ext_resource type="Script" uid="uid://c1wwrehvk76cp" path="res://Combat/battle_stats.gd" id="3_nyq6c"]
 
 [sub_resource type="Resource" id="Resource_n0l53"]
 script = ExtResource("2_nyq6c")
-metadata/_custom_type_script = "uid://bejcl2soe50v2"
 
 [sub_resource type="Resource" id="Resource_hrir6"]
 script = ExtResource("3_nyq6c")

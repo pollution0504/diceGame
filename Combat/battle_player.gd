@@ -34,7 +34,7 @@ const HOP_BACK_DURATION := 0.6
 const HOP_BACK_HEIGHT := 1.0
 const SWORD_SLICE_START_TIME := 0.17
 
-func Attack(target_entity: BattleEntity):
+func Attack(target_entity: BattleEntity, allies: Array = [], enemies: Array = []):
 	if stats.dice != null and current_dice_roll != -1 and not stats.dice.can_attack(current_dice_roll):
 		return
 	await PlayAttackAnimation(target_entity)
@@ -87,15 +87,10 @@ func PlayAttackAnimation(target_entity : BattleEntity):
 	tween.tween_callback(func(): 
 		voice_line.stream = SWORD_SLICE
 		voice_line.play(SWORD_SLICE_START_TIME)
-		print("tween callback fired!")
+		print("Impact callback fired!")
 		
-		# THIS IS ATTACK
-		# IF ENTITY HAS NO DICE OR HASN'T ROLLED YET
-		if stats.dice == null or current_dice_roll == -1:
-			target_entity.TakeDamage(stats.attack)
-		else:
-			var damage = stats.dice.get_damage_multiplier(current_dice_roll, stats.attack)
-			target_entity.TakeDamage(damage)
+		# Call base Attack to handle effect logic
+		super.Attack(target_entity)
 	)
 
 	# 4. PARABOLIC HOP BACK

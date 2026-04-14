@@ -26,5 +26,11 @@ func get_damage_multiplier(result: int, base_dmg: int) -> float:
 	# This is if you haven't rolled dice yet (dice_roll = -1)
 	return 1
 
+func get_effects(result: int) -> Array[Effect]:
+	var dmg = DamageEffect.new()
+	dmg.amount = 10 
+	dmg.use_dice_multiplier = true
+	return [dmg]
+
 func get_effect(result: int) -> Dictionary:
 	return { "type": "attack", "damage": get_damage_multiplier(result, 10) }

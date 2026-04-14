@@ -18,7 +18,7 @@ func roll_with_disadvantage() -> int:
 	return mini(roll(), roll())
 
 func get_damage_multiplier(result: int, base_dmg: int) -> float:
-	if result <= 5 and result >= 0:   return 0
+	if result <= 1 and result >= 0:   return 0
 	elif result <= 10: return base_dmg
 	elif result <= 15: return base_dmg * 1.5
 	elif result <= 19: return base_dmg * 2

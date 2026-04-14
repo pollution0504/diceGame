@@ -34,7 +34,7 @@ viewport_path = NodePath("HP/SubViewport")
 [node name="Player" type="Node3D" unique_id=472278561 node_paths=PackedStringArray("health_bar", "visual_component")]
 transform = Transform3D(0.645, 0, 0, 0, 0.645, 0, 0, 0, 0.645, 0, 0, 0)
 script = ExtResource("2_2y06h")
-health_bar = NodePath("HP/SubViewport/ProgressBar")
+health_bar = NodePath("HP/SubViewport/VBoxContainer/ProgressBar")
 stats = SubResource("Resource_hrir6")
 visual_component = NodePath("AnimatedSprite3D")
 
@@ -55,7 +55,18 @@ texture = SubResource("ViewportTexture_cbytb")
 transparent_bg = true
 size = Vector2i(286, 83)
 
-[node name="ProgressBar" type="ProgressBar" parent="HP/SubViewport" unique_id=166768163]
-offset_right = 282.0
-offset_bottom = 27.0
+[node name="VBoxContainer" type="VBoxContainer" parent="HP/SubViewport" unique_id=1469612637]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="DiceDebugger" type="Label" parent="HP/SubViewport/VBoxContainer" unique_id=289234185]
+layout_mode = 2
+text = "DICE:"
+
+[node name="ProgressBar" type="ProgressBar" parent="HP/SubViewport/VBoxContainer" unique_id=166768163]
+layout_mode = 2
+size_flags_vertical = 1
 value = 2.9

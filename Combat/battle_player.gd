@@ -9,6 +9,7 @@ const RUN = preload("res://SFX/hurt.sfx.wav")
 const KICK = preload("res://SFX/kick.sfx.wav")
 
 @export var health_bar : ProgressBar
+@onready var dice_debugger = $HP/SubViewport/VBoxContainer/DiceDebugger
 
 func _ready():
 	super()
@@ -116,3 +117,7 @@ func PlayRunAnimation():
 	voice_line.stream = RUN
 	voice_line.play()
 	await tween.finished
+
+func RollDice(allies: Array = [], enemies: Array = []):
+	super(allies,enemies)
+	dice_debugger.text = stats.dice.get_script().get_path().get_file().get_basename() + ": " + str(current_dice_roll)

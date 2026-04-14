@@ -230,15 +230,17 @@ func _on_roll_decision(source_entity: BattleAlly):
 	
 	await get_tree().create_timer(DICE_TIMER_DURATION).timeout
 	
-	source_entity.combat_menu.update_roll_button(true) # Grey out the Dice
+	#source_entity.combat_menu.update_roll_button(true) # Grey out the Dice
 	
 	await get_tree().process_frame
 	await get_tree().process_frame
+	#Im gonna end the turn here, but if we dont want it to end, you can play all this code afterwards
+	source_entity.turn_ended.emit()
 	
-	var cam = get_viewport().get_camera_3d()
-	var screen_pos = cam.unproject_position(source_entity.global_position)
-	source_entity.combat_menu.position = screen_pos + Vector2(150, 0)
-	source_entity.combat_menu.open()
+	#var cam = get_viewport().get_camera_3d()
+	#var screen_pos = cam.unproject_position(source_entity.global_position)
+	#source_entity.combat_menu.position = screen_pos + Vector2(150, 0)
+	#source_entity.combat_menu.open()
 	
 func _on_item_decision(source_entity : BattleAlly):
 	source_entity.combat_menu.close()

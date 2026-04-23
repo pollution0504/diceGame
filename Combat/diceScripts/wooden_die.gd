@@ -1,13 +1,6 @@
 extends Dice
 class_name WoodenDie
 
-func _init():
-	has_nat20 = false
-
-func can_attack(result: int) -> bool:
-	print("can_attack called with: ", result)
-	return result > 5
-
 
 func get_effects(result: int) -> Array[Effect]:
 	var effects : Array[Effect] = []
@@ -18,7 +11,7 @@ func get_effects(result: int) -> Array[Effect]:
 		effects.append(heal)
 	elif result > 5:
 		var dmg = DamageEffect.new()
-		dmg.amount = 10 # Base damage
+		dmg.base_damage = 10 # Base damage
 		dmg.use_dice_multiplier = true
 		effects.append(dmg)
 		

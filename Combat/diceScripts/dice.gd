@@ -8,6 +8,7 @@ var blood_counter: int = 0  # for Bloodthirst
 func roll() -> int:
 	return randi_range(1, sides)
 
+
 func can_attack(result: int) -> bool:
 	return true  # default, all rolls allow attack
 

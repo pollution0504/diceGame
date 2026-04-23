@@ -1,7 +1,7 @@
 extends BattleEnemy
 class_name BattleMinion
 
-func Attack(target_entity : BattleEntity, allies: Array = [], enemies: Array = []):
+func UseAttack(target_entity : BattleEntity, allies: Array = [], enemies: Array = []):
 	await PlayAttackAnimation(target_entity)
 	super(target_entity)
 	

@@ -214,12 +214,19 @@ func _on_attack_decision(source_entity : BattleAlly):
 	
 	if target_idx != -1:
 		var target = enemies[target_idx]
-		await source_entity.Attack(target, allies, enemies)
+		await source_entity.UseAttack(target, allies, enemies)
 	
 	source_entity.turn_ended.emit()
 
-func _on_skill_decision(source_entity : BattleAlly):
+func _on_skill_decision(source_entity : BattleAlly, skill : Skill):
+	print("_on_skill_decision called by: ", source_entity.name)
 	source_entity.combat_menu.close()
+	var target_idx = await get_target_selection()
+	
+	if target_idx != -1:
+		var target = enemies[target_idx]
+		await source_entity.UseSkill(skill,target, allies, enemies)
+	
 	source_entity.turn_ended.emit()
 	
 func _on_roll_decision(source_entity: BattleAlly):

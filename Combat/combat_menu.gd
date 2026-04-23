@@ -4,7 +4,7 @@ class_name CombatMenu
 @export var entity : BattleEntity
 
 signal attack_pressed(BattleEntity)
-signal skill_pressed(BattleEntity)
+signal skill_pressed(BattleEntity, Skill)
 signal roll_pressed(BattleEntity)
 signal item_pressed(BattleEntity)
 signal run_pressed(BattleEntity)
@@ -19,11 +19,13 @@ signal run_pressed(BattleEntity)
 	$CarouselContainer/OptionHolder/ItemIcon,
 	$CarouselContainer/OptionHolder/RunIcon,
 ]
+@onready var skill_list: ItemList = $SkillList
 
 var options := ["Attack", "Skill", "Roll", "Item", "Run"]
 var selected_option := 0
 # is the menu showing
 var is_active := false
+var skills_populated := false
 
 const menu_back_sfx = preload("res://SFX/menu_back_sfx.wav")
 const menu_scroll_sfx = preload("res://SFX/menu_scroll_sfx.wav")
@@ -36,12 +38,20 @@ func _ready() -> void:
 		icon.size = Vector2(96, 96)
 	hide()
 
+func _process(delta: float) -> void:
+	if entity and !skills_populated:
+		PopulateSkills()
+		skills_populated = true
+		
+
+
 # i figured out how to do the subtext function thingy
 ## Opens the Combat Menu
 func open():
 	selected_option = 0
 	carousel_container.selected_index = 0
 	is_active = true
+	skill_list.hide()
 	show()
 
 ## Closes the Combat Menu
@@ -86,7 +96,8 @@ func confirm_selection():
 		"Attack":
 			attack_pressed.emit(entity)
 		"Skill":
-			skill_pressed.emit(entity)
+			skill_list.show()
+			is_active = false
 		"Roll":
 			if entity.current_dice_roll == -1:
 				roll_pressed.emit(entity)
@@ -98,15 +109,10 @@ func confirm_selection():
 			run_pressed.emit(entity)
 
 
-#func update_visuals():
-	#for i in range(labels.size()):
-		#var label = labels[i]
-#
-		#if i == selected_option:
-			#label.text = "> " + options[i] + " <"
-			#label.scale = Vector2(1.2, 1.2)
-			#label.modulate = Color(1, 1, 0) # yellow
-		#else:
-			#label.text = options[i]
-			#label.scale = Vector2(1, 1)
-			#label.modulate = Color(1, 1, 1)
+func PopulateSkills():
+	for skill in entity.stats.skills:
+		skill_list.add_item(skill.name)
+
+
+func _on_skill_list_item_activated(index: int) -> void:
+	skill_pressed.emit(entity, entity.stats.skills[index])

@@ -69,13 +69,13 @@ func RollDice(allies: Array = [], enemies: Array = []):
 		apply_effect_array(roll_effects, self, allies, enemies)
 
 
-func Attack(target_entity: BattleEntity, allies: Array = [], enemies: Array = []):
+func UseAttack(target_entity: BattleEntity, allies: Array = [], enemies: Array = []):
 	# If the entity hasn't rolled or has no dice, use base attack
 	var effects: Array[Effect] = []
 	
 	if stats.dice == null or current_dice_roll == -1:
 		var dmg = DamageEffect.new()
-		dmg.amount = stats.attack
+		dmg.base_damage = stats.attack
 		dmg.use_dice_multiplier = false
 		effects.append(dmg)
 	else:
@@ -97,6 +97,15 @@ func Attack(target_entity: BattleEntity, allies: Array = [], enemies: Array = []
 	)
 	
 	apply_effect_array(attack_effects, target_entity, allies, enemies)
+
+func UseSkill(skill : Skill,target_entity: BattleEntity, allies: Array = [], enemies: Array = []):
+	# If the entity hasn't rolled or has no dice, use base attack
+	var effects: Array[Effect] = skill.effects
+	# Passives are applied here
+	effects = _modify_attack_effects(effects)
+	apply_effect_array(effects, target_entity, allies, enemies)
+
+
 
 func _modify_attack_effects(effects: Array[Effect]) -> Array[Effect]:
 	var modified_effects = effects.duplicate()
@@ -125,6 +134,11 @@ func Heal(amount: int):
 
 
 func TakeDamage(damage: int) -> int:
+	
+	var current_statuses = active_statuses.duplicate()
+	for status in current_statuses:
+		status.on_damage_taken(self,damage)
+	
 	if randi_range(0, 100) < stats.agility:
 		print(entity_name, " dodged")
 		return 0

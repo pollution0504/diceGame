@@ -1,0 +1,30 @@
+[gd_resource type="Resource" script_class="Skill" format=3 uid="uid://bi5iyhuio7aq4"]
+
+[ext_resource type="Script" uid="uid://6xm14yat1ht2" path="res://Combat/effectScripts/effect.gd" id="1_1dl8h"]
+[ext_resource type="Script" uid="uid://bskrvflcdgkli" path="res://Combat/effectScripts/damage_effect.gd" id="2_2uqm8"]
+[ext_resource type="Script" uid="uid://d2ca55opiqa03" path="res://Combat/skillScripts/skill.gd" id="2_7ynw0"]
+[ext_resource type="Script" uid="uid://n5l60xb6tqk8" path="res://Combat/effectScripts/burn_effect.gd" id="3_u4xev"]
+[ext_resource type="Script" uid="uid://ddqc7gke31p6i" path="res://Combat/effectScripts/burn_status.gd" id="4_2hcgr"]
+
+[sub_resource type="Resource" id="Resource_7ynw0"]
+script = ExtResource("2_2uqm8")
+base_damage = 20
+attack_scaling = 0.5
+magic_scaling = 0.5
+metadata/_custom_type_script = "uid://bskrvflcdgkli"
+
+[sub_resource type="Resource" id="Resource_q1hqt"]
+script = ExtResource("4_2hcgr")
+metadata/_custom_type_script = "uid://ddqc7gke31p6i"
+
+[sub_resource type="Resource" id="Resource_ekjyd"]
+script = ExtResource("3_u4xev")
+status_to_apply = SubResource("Resource_q1hqt")
+metadata/_custom_type_script = "uid://n5l60xb6tqk8"
+
+[resource]
+script = ExtResource("2_7ynw0")
+name = "Fireball"
+effects = Array[ExtResource("1_1dl8h")]([SubResource("Resource_7ynw0"), SubResource("Resource_ekjyd")])
+distance_from_enemy = 5.0
+metadata/_custom_type_script = "uid://d2ca55opiqa03"

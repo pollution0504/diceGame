@@ -10,7 +10,7 @@ func take_turn(allies: Array, enemies: Array):
 	
 	var target = choose_target(allies)
 	if target:
-		await Attack(target)
+		await UseAttack(target)
 		print("ouch")
 
 func choose_target(party: Array) -> BattleEntity:

@@ -1,0 +1,120 @@
+[gd_scene format=3 uid="uid://bpiwxbhmd1r0b"]
+
+[ext_resource type="Texture2D" uid="uid://q1dd1vb8jr1f" path="res://icon.svg" id="1_go1fs"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_go1fs"]
+sky_top_color = Color(0.49349666, 0.38985243, 0.17873135, 1)
+sky_horizon_color = Color(1.024262, 1.030235, 1.034025, 1)
+ground_bottom_color = Color(0.43673575, 0.56427217, 0.79055274, 1)
+ground_horizon_color = Color(1.024262, 1.030235, 1.034025, 1)
+
+[sub_resource type="Sky" id="Sky_ceswo"]
+sky_material = SubResource("ProceduralSkyMaterial_go1fs")
+
+[sub_resource type="Environment" id="Environment_esqhg"]
+background_mode = 2
+sky = SubResource("Sky_ceswo")
+tonemap_mode = 2
+glow_enabled = true
+
+[sub_resource type="GDScript" id="GDScript_esqhg"]
+script/source = "extends CharacterBody3D
+
+
+const SPEED = 5.0
+const JUMP_VELOCITY = 4.5
+
+
+func _physics_process(delta: float) -> void:
+	# Add the gravity.
+	if not is_on_floor():
+		velocity += get_gravity() * delta
+
+	# Handle jump.
+	if Input.is_action_just_pressed(\"ui_accept\") and is_on_floor():
+		velocity.y = JUMP_VELOCITY
+
+	# Get the input direction and handle the movement/deceleration.
+	# As good practice, you should replace UI actions with custom gameplay actions.
+	var input_dir := Input.get_vector(\"ui_left\", \"ui_right\", \"ui_up\", \"ui_down\")
+	var direction := (transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
+	if direction:
+		velocity.x = direction.x * SPEED
+		velocity.z = direction.z * SPEED
+	else:
+		velocity.x = move_toward(velocity.x, 0, SPEED)
+		velocity.z = move_toward(velocity.z, 0, SPEED)
+
+	move_and_slide()
+"
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_kojgq"]
+size = Vector3(1.25, 1.25, 0.2)
+
+[sub_resource type="SphereMesh" id="SphereMesh_go1fs"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_go1fs"]
+albedo_color = Color(0.31799492, 0.56966627, 0.32469967, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_ceswo"]
+material = SubResource("StandardMaterial3D_go1fs")
+size = Vector3(15, 5, 10)
+
+[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_go1fs"]
+data = PackedVector3Array(-7.5, 2.5, 5, 7.5, 2.5, 5, -7.5, -2.5, 5, 7.5, 2.5, 5, 7.5, -2.5, 5, -7.5, -2.5, 5, 7.5, 2.5, -5, -7.5, 2.5, -5, 7.5, -2.5, -5, -7.5, 2.5, -5, -7.5, -2.5, -5, 7.5, -2.5, -5, 7.5, 2.5, 5, 7.5, 2.5, -5, 7.5, -2.5, 5, 7.5, 2.5, -5, 7.5, -2.5, -5, 7.5, -2.5, 5, -7.5, 2.5, -5, -7.5, 2.5, 5, -7.5, -2.5, -5, -7.5, 2.5, 5, -7.5, -2.5, 5, -7.5, -2.5, -5, 7.5, 2.5, 5, -7.5, 2.5, 5, 7.5, 2.5, -5, -7.5, 2.5, 5, -7.5, 2.5, -5, 7.5, 2.5, -5, -7.5, -2.5, 5, 7.5, -2.5, 5, -7.5, -2.5, -5, 7.5, -2.5, 5, 7.5, -2.5, -5, -7.5, -2.5, -5)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ceswo"]
+albedo_color = Color(0.33147344, 0.15446106, 0.05651193, 1)
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_esqhg"]
+material = SubResource("StandardMaterial3D_ceswo")
+height = 6.0
+radial_segments = 8
+
+[node name="OverworldTest" type="Node3D" unique_id=1811550645]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=859214092]
+environment = SubResource("Environment_esqhg")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=555014655]
+transform = Transform3D(0.38841638, -0.7890364, 0.47597712, 4.5156785e-08, 0.5165334, 0.8562673, -0.9214842, -0.3325882, 0.20063007, 0, 0, 0)
+shadow_enabled = true
+
+[node name="OverworldPlayer" type="CharacterBody3D" parent="." unique_id=1275568619]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.3343158, 0)
+script = SubResource("GDScript_esqhg")
+
+[node name="Sprite3D" type="Sprite3D" parent="OverworldPlayer" unique_id=788650828]
+texture = ExtResource("1_go1fs")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="OverworldPlayer" unique_id=2009093450]
+shape = SubResource("BoxShape3D_kojgq")
+
+[node name="Camera3D" type="Camera3D" parent="OverworldPlayer" unique_id=686361827]
+transform = Transform3D(1, 0, 0, 0, 0.9193209, 0.39350873, 0, -0.39350873, 0.9193209, 0, 3.8551054, 11.257896)
+fov = 45.0
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="OverworldPlayer" unique_id=976757696]
+transform = Transform3D(1.5, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.054922104, 0)
+cast_shadow = 3
+mesh = SubResource("SphereMesh_go1fs")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="." unique_id=1595226600]
+
+[node name="Ground" type="MeshInstance3D" parent="StaticBody3D" unique_id=1184485446]
+mesh = SubResource("BoxMesh_ceswo")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D" unique_id=1184324339]
+shape = SubResource("ConcavePolygonShape3D_go1fs")
+
+[node name="Tree" type="MeshInstance3D" parent="." unique_id=515242693]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5.2995615, -2.6979795)
+mesh = SubResource("CylinderMesh_esqhg")
+
+[node name="Tree2" type="MeshInstance3D" parent="." unique_id=658679157]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.1676693, 3.1845384, -2.6979795)
+mesh = SubResource("CylinderMesh_esqhg")
+
+[node name="Tree3" type="MeshInstance3D" parent="." unique_id=1815291081]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.9327908, 1.9182482, -2.6979795)
+mesh = SubResource("CylinderMesh_esqhg")

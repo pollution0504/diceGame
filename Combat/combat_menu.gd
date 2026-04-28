@@ -27,6 +27,13 @@ var selected_option := 0
 var is_active := false
 var skills_populated := false
 
+var attack_disabled := false
+var skills_disabled := false
+var roll_disabled := false
+var item_disabled := false
+var run_disabled := false
+
+
 const menu_back_sfx = preload("res://SFX/menu_back_sfx.wav")
 const menu_scroll_sfx = preload("res://SFX/menu_scroll_sfx.wav")
 const menu_select_sfx = preload("res://SFX/menu_select_sfx.wav")
@@ -51,6 +58,7 @@ func open():
 	selected_option = 0
 	carousel_container.selected_index = 0
 	is_active = true
+	update_all_buttons()
 	skill_list.hide()
 	show()
 
@@ -58,13 +66,41 @@ func open():
 func close():
 	is_active = false
 	hide()
+## Updates the state of each button in combat menu
+## 0: Attack
+## 1: Skill
+## 2: Roll
+## 3: Item
+## 4: Run
+func update_button(button_index: int):
+	if button_index < 0 or button_index >= option_icons.size():
+		push_warning("Out of range button index: " + str(button_index))
+		return
+	match button_index:
+		0: update_attack_button()
+		1: update_skill_button()
+		2: update_roll_button()
+		3: update_item_button()
+		4: update_run_button()
 
-func update_roll_button(has_active_roll: bool):
-	var roll_icon = option_icons[2]  # RollIcon is index 2
-	if has_active_roll:
-		roll_icon.modulate = Color(0.3, 0.3, 0.3)  # grey out
-	else:
-		roll_icon.modulate = Color(1, 1, 1)  # normal
+func update_all_buttons():
+	for i in option_icons.size():
+		update_button(i)
+
+func update_attack_button():
+	pass
+
+func update_skill_button():
+	pass
+
+func update_roll_button():
+	option_icons[2].modulate = Color(0.3, 0.3, 0.3) if entity.current_dice_roll != -1 else Color(1, 1, 1)
+
+func update_item_button():
+	pass
+
+func update_run_button():
+	pass
 
 # Goes Up and Down on the Menu
 func _unhandled_input(event):

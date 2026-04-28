@@ -122,7 +122,7 @@ func advance_turn():
 	
 	# Process status effects at the start of the turn
 	current_actor.process_turn()
-	
+		
 	if not current_actor.is_alive():
 		advance_turn()
 		return
@@ -237,7 +237,7 @@ func _on_roll_decision(source_entity: BattleAlly):
 	
 	await get_tree().create_timer(DICE_TIMER_DURATION).timeout
 	
-	#source_entity.combat_menu.update_roll_button(true) # Grey out the Dice
+	#source_entity.combat_menu.update_button(2) # Grey out the Dice
 	
 	await get_tree().process_frame
 	await get_tree().process_frame

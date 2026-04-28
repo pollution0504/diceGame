@@ -11,8 +11,8 @@ func take_turn(allies: Array, enemies: Array):
 		print(entity_name, " Roll expires in ", dice_roll_turns_remaining, " turns")
 		if dice_roll_turns_remaining == 0:
 			current_dice_roll = -1
-			if combat_menu:
-				combat_menu.update_roll_button(false) # Ungrey out the Dice
+			#if combat_menu:
+				#combat_menu.update_button(2) # Ungrey out the Dice
 			print(entity_name, " Roll expired!")
 	
 	print(entity_name, " turn")

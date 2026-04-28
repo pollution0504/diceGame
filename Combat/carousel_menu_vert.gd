@@ -68,7 +68,7 @@ func _process(delta: float) -> void:
 			i.mouse_filter = Control.MOUSE_FILTER_STOP
 			i.focus_mode = Control.FOCUS_ALL
 		else:
-			i.z_index = -abs(i.get_index()-selected_index)
+			i.z_index = -abs(distance_to_index(i.get_index(), selected_index, position_offset_node.get_child_count()))
 			i.mouse_filter = Control.MOUSE_FILTER_IGNORE
 			i.focus_mode = Control.FOCUS_NONE
 
@@ -89,3 +89,7 @@ func _down():
 	selected_index += 1
 	if selected_index > position_offset_node.get_child_count()-1:
 		selected_index -= 1
+		
+func distance_to_index(subject: int, current: int, arr_size: int) -> int:
+	var d = abs(current - subject)
+	return mini(d, arr_size - d)

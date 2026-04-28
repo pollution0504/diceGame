@@ -12,6 +12,7 @@ const CURSOR = preload("res://Combat/cursor.tscn")
 const menu_back_sfx = preload("res://SFX/menu_back_sfx.wav")
 const menu_scroll_sfx = preload("res://SFX/menu_scroll_sfx.wav")
 const menu_select_sfx = preload("res://SFX/menu_select_sfx.wav")
+const dice_roll_sfx = preload("res://SFX/dice_roll_sfx.wav")
 
 @export var battle_entities : Array[PackedScene]
 var allies : Array[BattleAlly]
@@ -20,11 +21,12 @@ var enemies : Array[BattleEnemy]
 const COMBAT_MENU_OFFSET := Vector3(150,0,0)
 
 const BELL_TIMER_DURATION := 3.0
+const DICE_TIMER_DURATION := 1.0
 const ENEMY_TURN_DELAY := 1.0
 const CURSOR_HEIGHT_OFFSET := 0.9
 const CURSOR_LERP_DURATION := 0.1
 
-var selection_cursor : Node3D
+var selection_cursor : Node3D  
 var cursor_tween : Tween
 
 enum TURNS {ALLIES, ENEMIES}
@@ -87,7 +89,11 @@ func instantiate_entities():
 		ally.combat_menu = cm
 		cm.entity = ally
 		cm.close()
+		
 		ally.combat_menu.attack_pressed.connect(_on_attack_decision)
+		ally.combat_menu.skill_pressed.connect(_on_skill_decision)
+		ally.combat_menu.roll_pressed.connect(_on_roll_decision)
+		ally.combat_menu.item_pressed.connect(_on_item_decision)
 		ally.combat_menu.run_pressed.connect(_on_run_decision)
 	# Connect using the callable syntax
 	i = 1
@@ -114,29 +120,20 @@ func advance_turn():
 	
 	var current_actor = turn_queue.pop_front()
 	
+	# Process status effects at the start of the turn
+	current_actor.process_turn()
+		
 	if not current_actor.is_alive():
 		advance_turn()
 		return
 	
-	if current_actor is BattleEnemy:
-		await enemy_turn(current_actor)
-	else:
-		await ally_turn(current_actor)
-
-func ally_turn(actor: BattleAlly):
-	print(actor.name," ally turn")
-	var cam = get_viewport().get_camera_3d()
-	var screen_pos = cam.unproject_position(actor.global_position)
-	actor.combat_menu.position = screen_pos + Vector2(150, 0)
-	actor.combat_menu.open()	# The menu will trigger _on_attack_decision via signal
-
-func enemy_turn(actor: BattleEnemy):
-	print("enemy turn")
-	await get_tree().create_timer(ENEMY_TURN_DELAY).timeout # Small pause for "thinking"
-	var target = actor.choose_target([allies.pick_random()])
-	if target:
-		await actor.Attack(target)
-		print("ouch")
+	if current_actor.skip_turn:
+		print(current_actor.entity_name, " skips turn!")
+		advance_turn()
+		return
+	
+	# The actor now knows how to take its own turn
+	await current_actor.take_turn(allies, enemies)
 	advance_turn()
 
 func enemy_death(actor: BattleEnemy):
@@ -211,15 +208,50 @@ func check_battle_over() -> bool:
 	return false
 	
 func _on_attack_decision(source_entity : BattleAlly):
+	print("_on_attack_decision called by: ", source_entity.name)
 	source_entity.combat_menu.close()
 	var target_idx = await get_target_selection()
 	
 	if target_idx != -1:
 		var target = enemies[target_idx]
-		await source_entity.Attack(target)
+		await source_entity.UseAttack(target, allies, enemies)
 	
-	advance_turn()
+	source_entity.turn_ended.emit()
+
+func _on_skill_decision(source_entity : BattleAlly, skill : Skill):
+	print("_on_skill_decision called by: ", source_entity.name)
+	source_entity.combat_menu.close()
+	var target_idx = await get_target_selection()
 	
+	if target_idx != -1:
+		var target = enemies[target_idx]
+		await source_entity.UseSkill(skill,target, allies, enemies)
+	
+	source_entity.turn_ended.emit()
+	
+func _on_roll_decision(source_entity: BattleAlly):
+	source_entity.combat_menu.close()
+	
+	AudioManager.play_sound(dice_roll_sfx)
+	source_entity.RollDice(allies, enemies)
+	
+	await get_tree().create_timer(DICE_TIMER_DURATION).timeout
+	
+	#source_entity.combat_menu.update_button(2) # Grey out the Dice
+	
+	await get_tree().process_frame
+	await get_tree().process_frame
+	#Im gonna end the turn here, but if we dont want it to end, you can play all this code afterwards
+	source_entity.turn_ended.emit()
+	
+	#var cam = get_viewport().get_camera_3d()
+	#var screen_pos = cam.unproject_position(source_entity.global_position)
+	#source_entity.combat_menu.position = screen_pos + Vector2(150, 0)
+	#source_entity.combat_menu.open()
+	
+func _on_item_decision(source_entity : BattleAlly):
+	source_entity.combat_menu.close()
+	source_entity.turn_ended.emit()
 	
 func _on_run_decision(source_entity : BattleEntity):
 	source_entity.combat_menu.close()

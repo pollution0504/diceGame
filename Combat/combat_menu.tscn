@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://dgjar6b8g0n50"]
 
 [ext_resource type="Script" uid="uid://d4euuubm201l8" path="res://Combat/combat_menu.gd" id="1_2bcnp"]
-[ext_resource type="Script" uid="uid://bwc2axp5eah4c" path="res://carousel_menu_vert.gd" id="2_lmj7a"]
+[ext_resource type="Script" uid="uid://bwc2axp5eah4c" path="res://Combat/carousel_menu_vert.gd" id="2_lmj7a"]
 [ext_resource type="Texture2D" uid="uid://1fwao1occ6sh" path="res://Sprites/attack.png" id="3_el3dd"]
 [ext_resource type="Texture2D" uid="uid://kddxixjcupd8" path="res://Sprites/skill.png" id="4_h4nhm"]
 [ext_resource type="Texture2D" uid="uid://k2l5f6fupr6i" path="res://Sprites/run.png" id="5_bbsmr"]
@@ -16,6 +16,19 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_2bcnp")
+
+[node name="SkillList" type="ItemList" parent="." unique_id=373612720]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 172.0
+offset_top = -279.0
+offset_right = 172.0
+offset_bottom = -279.0
+grow_horizontal = 2
+grow_vertical = 2
+allow_rmb_select = true
 
 [node name="CarouselContainer" type="Node2D" parent="." unique_id=890633860 node_paths=PackedStringArray("position_offset_node")]
 script = ExtResource("2_lmj7a")
@@ -38,7 +51,7 @@ offset_bottom = 326.9997
 
 [node name="AttackIcon" type="TextureRect" parent="CarouselContainer/OptionHolder" unique_id=529652122]
 modulate = Color(1, 1, 1, 0.895)
-z_index = -4
+z_index = -1
 custom_minimum_size = Vector2(64, 64)
 layout_mode = 0
 offset_left = -103.8156
@@ -54,7 +67,7 @@ stretch_mode = 5
 
 [node name="SkillIcon" type="TextureRect" parent="CarouselContainer/OptionHolder" unique_id=827050596]
 modulate = Color(1, 1, 1, 0.79)
-z_index = -3
+z_index = -2
 custom_minimum_size = Vector2(64, 64)
 layout_mode = 0
 offset_left = -64.6844
@@ -114,3 +127,5 @@ mouse_filter = 0
 texture = ExtResource("5_bbsmr")
 expand_mode = 3
 stretch_mode = 5
+
+[connection signal="item_activated" from="SkillList" to="." method="_on_skill_list_item_activated"]

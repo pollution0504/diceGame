@@ -9,21 +9,19 @@ const RUN = preload("res://SFX/hurt.sfx.wav")
 const KICK = preload("res://SFX/kick.sfx.wav")
 
 @export var health_bar : ProgressBar
+@onready var dice_debugger = $HP/SubViewport/VBoxContainer/DiceDebugger
 
 func _ready():
 	super()
-	print("max health: ", stats.max_health)
-	print("current health: ", current_health)
 	health_bar.max_value = stats.max_health
 	health_bar.value = current_health
-	print("bar percent-ish value: ", health_bar.value, "/", health_bar.max_value)
 
-func TakeDamage(damage : int) -> int:
-	var dmg = super(damage)
-	health_bar.value = current_health
+func TakeDamage(damage: int) -> int:
 	voice_line.stream = KICK
 	voice_line.play()
-	return dmg
+	var result = super.TakeDamage(damage)
+	health_bar.value = current_health      
+	return result
 
 const INTRO_OFFSET := Vector3(-8, 0, 0)
 const INTRO_DURATION := 0.8
@@ -37,9 +35,18 @@ const HOP_BACK_DURATION := 0.6
 const HOP_BACK_HEIGHT := 1.0
 const SWORD_SLICE_START_TIME := 0.17
 
-func Attack(target_entity : BattleEntity):
+func UseAttack(target_entity: BattleEntity, allies: Array = [], enemies: Array = []):
+	if stats.dice != null and current_dice_roll != -1 and not stats.dice.can_attack(current_dice_roll):
+		return
 	await PlayAttackAnimation(target_entity)
 	
+func UseSkill(skill : Skill,target_entity: BattleEntity, allies: Array = [], enemies: Array = []):
+	await PlaySkillAnimation(skill,target_entity,allies,enemies)
+
+func Heal(amount: int):
+	super.Heal(amount)
+	health_bar.value = current_health
+
 func PlayIntroAnimation():
 	var original_position = global_position
 	global_position = original_position + INTRO_OFFSET
@@ -50,8 +57,6 @@ func PlayIntroAnimation():
 	voice_line.stream = PREPARE_YOURSELF
 	voice_line.play()
 	await tween.finished
-	
-	
 	
 func PlayAttackAnimation(target_entity : BattleEntity):
 	var original_pos = global_position
@@ -86,12 +91,51 @@ func PlayAttackAnimation(target_entity : BattleEntity):
 	tween.tween_callback(func(): 
 		voice_line.stream = SWORD_SLICE
 		voice_line.play(SWORD_SLICE_START_TIME)
-		super.Attack(target_entity)
+		print("Impact callback fired!")
+		
+		# Call base Attack to handle effect logic
+		super.UseAttack(target_entity)
 	)
 
 	# 4. PARABOLIC HOP BACK
 	var hop_arc = func(t: float):
 		var pos = impact_pos.lerp(original_pos, t)
+		pos.y = ground_y + (-4 * HOP_BACK_HEIGHT * pow(t - 0.5, 2) + HOP_BACK_HEIGHT)
+		global_position = pos
+
+	tween.chain().tween_method(hop_arc, 0.0, 1.0, HOP_BACK_DURATION)
+
+	await tween.finished
+	return null
+	
+func PlaySkillAnimation(skill : Skill,target_entity: BattleEntity, allies: Array = [], enemies: Array = []):
+	var original_pos = global_position
+	var target_pos = target_entity.global_position
+	var ground_y = original_pos.y
+
+	var dir = (target_pos - original_pos).normalized()
+	# Takeoff point
+	var jump_start_pos = target_pos - (dir * skill.distance_from_enemy)
+	var tween = get_tree().create_tween()
+
+	# 1. RUN UP
+	tween.tween_property(self, "global_position", jump_start_pos, RUN_UP_DURATION)\
+		.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+
+
+	# 3. IMPACT (Trigger damage and sound)
+	tween.tween_callback(func(): 
+		voice_line.stream = SWORD_SLICE
+		voice_line.play(SWORD_SLICE_START_TIME)
+		print("Impact callback fired!")
+		
+		# Call base Attack to handle effect logic
+		super.UseSkill(skill,target_entity,allies,enemies)
+	)
+
+	# 4. PARABOLIC HOP BACK
+	var hop_arc = func(t: float):
+		var pos = jump_start_pos.lerp(original_pos, t)
 		pos.y = ground_y + (-4 * HOP_BACK_HEIGHT * pow(t - 0.5, 2) + HOP_BACK_HEIGHT)
 		global_position = pos
 
@@ -112,3 +156,7 @@ func PlayRunAnimation():
 	voice_line.stream = RUN
 	voice_line.play()
 	await tween.finished
+
+func RollDice(allies: Array = [], enemies: Array = []):
+	super(allies,enemies)
+	dice_debugger.text = stats.dice.get_script().get_path().get_file().get_basename() + ": " + str(current_dice_roll)

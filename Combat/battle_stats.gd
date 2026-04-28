@@ -10,7 +10,11 @@ class_name BattleStats
 @export var defense: int = 5
 @export var agility: int = 10
 @export var luck: int = 5
+@export var magic: int = 5
+
 
 @export var weapon: Dictionary = {}  # { "name": "Sword", "atk_bonus": 5 }
 @export var armor: Dictionary = {}   # { "name": "Chestplate", "def_bonus": 3 }
-@export var dice: Dictionary = {}    # { "sides": 20, "bonus": 0 }
+@export var dice: Dice
+
+@export var skills: Array[Skill]

@@ -123,6 +123,7 @@ func apply_effect_array(effects: Array[Effect], target_entity: BattleEntity, all
 			Effect.Target.ENEMY:
 				effect.apply(self, target_entity)
 			Effect.Target.ALL_ALLIES:
+				effect.apply(self, self)
 				for ally in allies:
 					effect.apply(self, ally)
 			Effect.Target.ALL_ENEMIES:

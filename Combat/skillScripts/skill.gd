@@ -9,3 +9,6 @@ enum TargetType { ENEMY, ALLY, SELF, ALLIES, ENEMIES, ALL }
 @export var distance_from_enemy : float = 2.0
 
 @export var target_type: TargetType
+
+# wip
+@export var soundEffect: AudioStream

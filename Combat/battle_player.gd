@@ -110,11 +110,21 @@ func PlayAttackAnimation(target_entity : BattleEntity):
 	
 func PlaySkillAnimation(skill : Skill,target_entity: BattleEntity, allies: Array = [], enemies: Array = []):
 	var original_pos = global_position
-	var target_pos = target_entity.global_position
 	var ground_y = original_pos.y
 
+	# Pick a target position — center of enemies, or fallback to target_entity
+	var target_pos: Vector3
+	if target_entity == null and enemies.size() > 0:
+		target_pos = Vector3.ZERO
+		for e in enemies:
+			target_pos += e.global_position
+		target_pos /= enemies.size()
+	elif target_entity != null:
+		target_pos = target_entity.global_position
+	else:
+		target_pos = original_pos
+
 	var dir = (target_pos - original_pos).normalized()
-	# Takeoff point
 	var jump_start_pos = target_pos - (dir * skill.distance_from_enemy)
 	var tween = get_tree().create_tween()
 

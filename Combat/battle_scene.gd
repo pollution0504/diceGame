@@ -2,6 +2,7 @@ extends Node3D
 
 # Signals make the flow much easier to manage
 signal target_selected(index)
+
 @onready var audio_stream_player_2d = $AudioStreamPlayer2D
 const battle_music = preload("res://Music/fd_music.mp3")
 const boxing_bell = preload("res://SFX/bell_sfx.mp3")
@@ -79,7 +80,7 @@ func instantiate_entities():
 			ally.position += i * entity_spacing + Vector3(0,0.5,0)
 		if i == 2:
 			ally.position += Vector3(-4,0.5,-4)
-			
+		
 		i += 1
 		
 		var cm : CombatMenu = COMBAT_MENU.instantiate()
@@ -96,11 +97,14 @@ func instantiate_entities():
 		ally.combat_menu.run_pressed.connect(_on_run_decision)
 	# Connect using the callable syntax
 	i = 1
+	
 	for e in enemies:
 		e.position += -1 * i * entity_spacing + Vector3(0,0.5,0)
 		i += 1
 		e.on_death.connect(enemy_death)
-
+	for ally in allies:
+		ally.on_death.connect(ally_death)
+		
 func start_battle():
 	current_turn = TURNS.ALLIES
 	turn_queue = allies.duplicate() # Add allies here too
@@ -134,6 +138,12 @@ func advance_turn():
 	# The actor now knows how to take its own turn
 	await current_actor.take_turn(allies, enemies)
 	advance_turn()
+
+func ally_death(actor: BattleAlly):
+	allies.remove_at(allies.find(actor))
+	for ally in allies:
+		ally.queue_free()
+	actor.queue_free()
 
 func enemy_death(actor: BattleEnemy):
 	enemies.remove_at(enemies.find(actor))

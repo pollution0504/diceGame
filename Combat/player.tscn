@@ -8,6 +8,7 @@
 [ext_resource type="Resource" uid="uid://bi5iyhuio7aq4" path="res://Combat/skillScripts/skill_fireball.tres" id="5_5t2hr"]
 [ext_resource type="Resource" uid="uid://byru4fgvfhjce" path="res://Combat/skillScripts/fire_wave.tres" id="6_202cd"]
 [ext_resource type="Resource" uid="uid://cgarysks70e7h" path="res://Combat/skillScripts/party_heal.tres" id="7_5t2hr"]
+[ext_resource type="Resource" uid="uid://bn0ew5380u3ao" path="res://Combat/skillScripts/kamikaze.tres" id="8_202cd"]
 
 [sub_resource type="Resource" id="Resource_n0l53"]
 script = ExtResource("2_nyq6c")
@@ -16,7 +17,7 @@ metadata/_custom_type_script = "uid://bejcl2soe50v2"
 [sub_resource type="Resource" id="Resource_hrir6"]
 script = ExtResource("3_nyq6c")
 dice = SubResource("Resource_n0l53")
-skills = Array[ExtResource("4_uu0yv")]([ExtResource("5_5t2hr"), ExtResource("6_202cd"), ExtResource("7_5t2hr")])
+skills = Array[ExtResource("4_uu0yv")]([ExtResource("5_5t2hr"), ExtResource("6_202cd"), ExtResource("7_5t2hr"), ExtResource("8_202cd")])
 metadata/_custom_type_script = "uid://c1wwrehvk76cp"
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_cbytb"]

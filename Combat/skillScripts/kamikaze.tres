@@ -1,0 +1,55 @@
+[gd_resource type="Resource" script_class="Skill" format=3 uid="uid://bn0ew5380u3ao"]
+
+[ext_resource type="Script" uid="uid://6xm14yat1ht2" path="res://Combat/effectScripts/effect.gd" id="1_ab3wt"]
+[ext_resource type="Script" uid="uid://n5l60xb6tqk8" path="res://Combat/effectScripts/burn_effect.gd" id="2_ja7he"]
+[ext_resource type="Script" uid="uid://d2ca55opiqa03" path="res://Combat/skillScripts/skill.gd" id="2_lucsp"]
+[ext_resource type="Script" uid="uid://ddqc7gke31p6i" path="res://Combat/effectScripts/burn_status.gd" id="3_05kn1"]
+[ext_resource type="Script" uid="uid://bskrvflcdgkli" path="res://Combat/effectScripts/damage_effect.gd" id="4_2vmum"]
+
+[sub_resource type="Resource" id="Resource_sbgad"]
+script = ExtResource("3_05kn1")
+status_name = "Burn"
+metadata/_custom_type_script = "uid://ddqc7gke31p6i"
+
+[sub_resource type="Resource" id="Resource_2pcq7"]
+script = ExtResource("2_ja7he")
+status_to_apply = SubResource("Resource_sbgad")
+target_type = 3
+metadata/_custom_type_script = "uid://n5l60xb6tqk8"
+
+[sub_resource type="Resource" id="Resource_vrfpq"]
+script = ExtResource("3_05kn1")
+status_name = "Burn"
+metadata/_custom_type_script = "uid://ddqc7gke31p6i"
+
+[sub_resource type="Resource" id="Resource_ugump"]
+script = ExtResource("2_ja7he")
+status_to_apply = SubResource("Resource_vrfpq")
+target_type = 2
+metadata/_custom_type_script = "uid://n5l60xb6tqk8"
+
+[sub_resource type="Resource" id="Resource_ja7he"]
+script = ExtResource("4_2vmum")
+base_damage = 50
+mana_cost = 0
+target_type = 3
+metadata/_custom_type_script = "uid://bskrvflcdgkli"
+
+[sub_resource type="Resource" id="Resource_05kn1"]
+script = ExtResource("4_2vmum")
+base_damage = 25
+target_type = 2
+metadata/_custom_type_script = "uid://bskrvflcdgkli"
+
+[sub_resource type="Resource" id="Resource_lmaua"]
+script = ExtResource("4_2vmum")
+base_damage = 1000
+target_type = 0
+metadata/_custom_type_script = "uid://bskrvflcdgkli"
+
+[resource]
+script = ExtResource("2_lucsp")
+name = "Kamikaze"
+effects = Array[ExtResource("1_ab3wt")]([SubResource("Resource_2pcq7"), SubResource("Resource_ugump"), SubResource("Resource_ja7he"), SubResource("Resource_05kn1"), SubResource("Resource_lmaua")])
+target_type = 4
+metadata/_custom_type_script = "uid://d2ca55opiqa03"

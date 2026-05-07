@@ -1,8 +1,8 @@
 extends Effect
 class_name HealEffect
 
-var amount: int = 0
-var use_percentage: bool = false  # if true, heals % of max health instead of flat
+@export var amount: int = 0
+@export var use_percentage: bool = false  # if true, heals % of max health instead of flat
 
 func _init():
 	target_type = Effect.Target.SELF

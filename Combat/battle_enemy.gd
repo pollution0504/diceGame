@@ -1,7 +1,6 @@
 extends BattleEntity
 class_name BattleEnemy
 
-
 func take_turn(allies: Array, enemies: Array):
 	print(entity_name, " turn")
 	# Small pause for "thinking" moved to BattleScene if needed, or here.

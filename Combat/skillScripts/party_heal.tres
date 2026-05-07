@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="Skill" format=3 uid="uid://cgarysks70e7h"]
+
+[ext_resource type="Script" uid="uid://6xm14yat1ht2" path="res://Combat/effectScripts/effect.gd" id="1_744uk"]
+[ext_resource type="Script" uid="uid://d2ca55opiqa03" path="res://Combat/skillScripts/skill.gd" id="2_e1uf7"]
+[ext_resource type="Script" uid="uid://c2vp1so7y6lrd" path="res://Combat/effectScripts/heal_effect.gd" id="2_llrrk"]
+
+[sub_resource type="Resource" id="Resource_kpekp"]
+script = ExtResource("2_llrrk")
+amount = 10
+target_type = 2
+metadata/_custom_type_script = "uid://c2vp1so7y6lrd"
+
+[resource]
+script = ExtResource("2_e1uf7")
+name = "Party Heal"
+effects = Array[ExtResource("1_744uk")]([SubResource("Resource_kpekp")])
+target_type = 1
+metadata/_custom_type_script = "uid://d2ca55opiqa03"

@@ -2,7 +2,6 @@ extends Node3D
 
 # Signals make the flow much easier to manage
 signal target_selected(index)
-
 @onready var audio_stream_player_2d = $AudioStreamPlayer2D
 const battle_music = preload("res://Music/fd_music.mp3")
 const boxing_bell = preload("res://SFX/bell_sfx.mp3")
@@ -140,42 +139,53 @@ func enemy_death(actor: BattleEnemy):
 	enemies.remove_at(enemies.find(actor))
 	print("DEATH")
 
-func get_target_selection() -> int:
+func get_enemy_target() -> int:
+	return await get_target_selection(enemies)
+
+func get_ally_target() -> int:
+	return await get_target_selection(allies)
+
+func get_any_target() -> Array:
+	var combined = allies + enemies
+	var idx = await get_target_selection(combined)
+	return [combined, idx]
+	
+var _active_target_pool: Array = []
+
+# Update get_target_selection to set this before awaiting:
+func get_target_selection(target_array: Array) -> int:
 	is_targeting = true
 	selection_index = 0
-	_highlight_enemy(selection_index)
+	_active_target_pool = target_array 
+	_highlight_target(_active_target_pool, selection_index)
 	
-	# This "waits" until the target_selected signal is emitted in _input
 	var selected_index = await target_selected
 	
 	is_targeting = false
+	_active_target_pool = []
 	_clear_highlights()
 	return selected_index
 
 func _input(event: InputEvent) -> void:
 	if not is_targeting:
 		return
-		
 	if Input.is_action_just_pressed("right"):
-		selection_index = (selection_index + 1) % enemies.size()
+		selection_index = (selection_index + 1) % _active_target_pool.size()
 		AudioManager.play_sound(menu_scroll_sfx)
-		_update_highlights()
+		_highlight_target(_active_target_pool, selection_index)
 	elif Input.is_action_just_pressed("left"):
+		selection_index = (selection_index - 1 + _active_target_pool.size()) % _active_target_pool.size()
 		AudioManager.play_sound(menu_scroll_sfx)
-		selection_index = (selection_index - 1 + enemies.size()) % enemies.size()
-		_update_highlights()
-	elif Input.is_action_just_pressed("ui_accept"): # "Enter" or "Space"
+		_highlight_target(_active_target_pool, selection_index)
+	elif Input.is_action_just_pressed("ui_accept"):
 		AudioManager.play_sound(menu_select_sfx)
 		target_selected.emit(selection_index)
-
-func _update_highlights():
-	_highlight_enemy(selection_index)
 
 ## [code]_highlight_enemy(index)[/code] Moves the selection cursor to the enemy at index. 
 ## If the cursor is already visible, it smoothly tweens to the new position; 
 ## otherwise it snaps directly and shows it. Does nothing if the target is dead.
-func _highlight_enemy(index):
-	var target = enemies[index]
+func _highlight_target(target_array: Array, index: int):
+	var target = target_array[index]
 	if target.is_alive():
 		var target_pos = target.global_position + Vector3(0, CURSOR_HEIGHT_OFFSET, 0)
 		
@@ -210,7 +220,7 @@ func check_battle_over() -> bool:
 func _on_attack_decision(source_entity : BattleAlly):
 	print("_on_attack_decision called by: ", source_entity.name)
 	source_entity.combat_menu.close()
-	var target_idx = await get_target_selection()
+	var target_idx = await get_enemy_target()
 	
 	if target_idx != -1:
 		var target = enemies[target_idx]
@@ -221,11 +231,19 @@ func _on_attack_decision(source_entity : BattleAlly):
 func _on_skill_decision(source_entity : BattleAlly, skill : Skill):
 	print("_on_skill_decision called by: ", source_entity.name)
 	source_entity.combat_menu.close()
-	var target_idx = await get_target_selection()
+
+	var target
+	match skill.target_type:
+		Skill.TargetType.ENEMY:
+			var idx = await get_enemy_target()
+			if idx == -1: return
+			target = enemies[idx]
+		Skill.TargetType.ALLY:
+			var idx = await get_ally_target()
+			if idx == -1: return
+			target = allies[idx]
 	
-	if target_idx != -1:
-		var target = enemies[target_idx]
-		await source_entity.UseSkill(skill,target, allies, enemies)
+	await source_entity.UseSkill(skill,target, allies, enemies)
 	
 	source_entity.turn_ended.emit()
 	
@@ -249,8 +267,14 @@ func _on_roll_decision(source_entity: BattleAlly):
 	#source_entity.combat_menu.position = screen_pos + Vector2(150, 0)
 	#source_entity.combat_menu.open()
 	
-func _on_item_decision(source_entity : BattleAlly):
+func _on_item_decision(source_entity: BattleAlly):
 	source_entity.combat_menu.close()
+	#var target_idx = await get_ally_target()  # items target allies
+	#
+	#if target_idx != -1:
+		#var target = allies[target_idx]
+		#await source_entity.UseItem(target, allies, enemies)
+	
 	source_entity.turn_ended.emit()
 	
 func _on_run_decision(source_entity : BattleEntity):

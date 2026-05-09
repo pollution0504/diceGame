@@ -38,8 +38,9 @@ func apply_status(new_status: Status):
 func process_turn():
 	skip_turn = false
 	
-	# Create a duplicate list to iterate through while potentially 
-	# removing items from the main list
+	if not is_alive():
+		return
+	
 	var current_statuses = active_statuses.duplicate()
 	for status in current_statuses:
 		status.on_turn_start(self)
@@ -49,7 +50,7 @@ func process_turn():
 			active_statuses.erase(status)
 			print(entity_name, " lost status: ", status.status_name)
 	
-	if !is_alive():
+	if not is_alive():
 		die()
 
 func take_turn(allies: Array, enemies: Array):
@@ -116,6 +117,7 @@ func _modify_attack_effects(effects: Array[Effect]) -> Array[Effect]:
 	return modified_effects
 
 func apply_effect_array(effects: Array[Effect], target_entity: BattleEntity, allies: Array = [], enemies: Array = []):
+	print("apply_effect_array called on: ", entity_name)
 	for effect in effects:
 		match effect.target_type:
 			Effect.Target.SELF:
@@ -123,7 +125,6 @@ func apply_effect_array(effects: Array[Effect], target_entity: BattleEntity, all
 			Effect.Target.ENEMY:
 				effect.apply(self, target_entity)
 			Effect.Target.ALL_ALLIES:
-				effect.apply(self, self)
 				for ally in allies:
 					effect.apply(self, ally)
 			Effect.Target.ALL_ENEMIES:
@@ -151,7 +152,7 @@ func TakeDamage(damage: int) -> int:
 	if !is_alive():
 		die()
 	
-	print(entity_name, " took ", damage_taken, " damage (", current_health, "/", stats.max_health, " HP)")
+	#print(entity_name, " took ", damage_taken, " damage (", current_health, "/", stats.max_health, " HP)")
 	PlayHitImpactTween()
 	return damage_taken
 

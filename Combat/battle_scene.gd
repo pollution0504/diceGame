@@ -75,6 +75,8 @@ func instantiate_entities():
 		add_child(entity)	
 	var i = 1
 	for ally in allies:
+		ally.on_death.connect(ally_death)
+		ally.entity_name = ally.name + " " + str(i)
 		#do positioning
 		if i == 1:
 			ally.position += i * entity_spacing + Vector3(0,0.5,0)
@@ -99,12 +101,12 @@ func instantiate_entities():
 	i = 1
 	
 	for e in enemies:
+		e.entity_name = e.name + " " + str(i)
 		e.position += -1 * i * entity_spacing + Vector3(0,0.5,0)
 		i += 1
 		e.on_death.connect(enemy_death)
-	for ally in allies:
-		ally.on_death.connect(ally_death)
 		
+	
 func start_battle():
 	current_turn = TURNS.ALLIES
 	turn_queue = allies.duplicate() # Add allies here too
@@ -141,10 +143,8 @@ func advance_turn():
 
 func ally_death(actor: BattleAlly):
 	allies.remove_at(allies.find(actor))
-	for ally in allies:
-		ally.queue_free()
 	actor.queue_free()
-
+	
 func enemy_death(actor: BattleEnemy):
 	enemies.remove_at(enemies.find(actor))
 	print("DEATH")
@@ -231,7 +231,7 @@ func _on_attack_decision(source_entity : BattleAlly):
 	print("_on_attack_decision called by: ", source_entity.name)
 	source_entity.combat_menu.close()
 	var target_idx = await get_enemy_target()
-	
+
 	if target_idx != -1:
 		var target = enemies[target_idx]
 		await source_entity.UseAttack(target, allies, enemies)
@@ -252,9 +252,11 @@ func _on_skill_decision(source_entity : BattleAlly, skill : Skill):
 			var idx = await get_ally_target()
 			if idx == -1: return
 			target = allies[idx]
+		Skill.TargetType.NONE:
+			pass
 	
 	await source_entity.UseSkill(skill,target, allies, enemies)
-	
+		
 	source_entity.turn_ended.emit()
 	
 func _on_roll_decision(source_entity: BattleAlly):

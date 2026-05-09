@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="Skill" format=3 uid="uid://bn0ew5380u3ao"]
+[gd_resource type="Resource" script_class="Skill" format=3 uid="uid://7vwihpkkbte"]
 
 [ext_resource type="Script" uid="uid://6xm14yat1ht2" path="res://Combat/effectScripts/effect.gd" id="1_ab3wt"]
 [ext_resource type="Script" uid="uid://n5l60xb6tqk8" path="res://Combat/effectScripts/burn_effect.gd" id="2_ja7he"]
@@ -43,7 +43,9 @@ metadata/_custom_type_script = "uid://bskrvflcdgkli"
 
 [sub_resource type="Resource" id="Resource_lmaua"]
 script = ExtResource("4_2vmum")
-base_damage = 1000
+base_damage = 9999
+attack_scaling = 0.0
+use_dice_multiplier = false
 target_type = 0
 metadata/_custom_type_script = "uid://bskrvflcdgkli"
 
@@ -51,5 +53,5 @@ metadata/_custom_type_script = "uid://bskrvflcdgkli"
 script = ExtResource("2_lucsp")
 name = "Kamikaze"
 effects = Array[ExtResource("1_ab3wt")]([SubResource("Resource_2pcq7"), SubResource("Resource_ugump"), SubResource("Resource_ja7he"), SubResource("Resource_05kn1"), SubResource("Resource_lmaua")])
-target_type = 4
+target_type = 6
 metadata/_custom_type_script = "uid://d2ca55opiqa03"
